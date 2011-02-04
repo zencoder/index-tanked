@@ -13,6 +13,7 @@ Gem::Specification.new do |s|
   s.homepage    = "http://github.com/zencoder/tanked"
   s.summary     = "Index Tank <http://indextank.com> Active Record etc integration library."
   s.description = "Index Tank <http://indextank.com> Active Record etc integration library."
+  s.add_dependency "indextank"
   s.add_development_dependency "shoulda"
   s.add_development_dependency "mocha"
   s.add_development_dependency "webmock"
