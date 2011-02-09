@@ -7,8 +7,8 @@ module IndexTanked
       self.instance_exec &block
     end
 
-    def tanks(field)
-      @tanked_fields << field
+    def tanks(field, method=nil)
+      @tanked_fields <<  [field, method]
     end
   end
 end
