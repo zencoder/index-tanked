@@ -3,7 +3,7 @@ module IndexTanked
     attr_reader :tanked_fields, :index
 
     def index_tanked(index=nil, &block)
-      @index = index || Tanked::Configuration.index
+      @index = index || IndexTanked::Configuration.index
       self.instance_exec &block
     end
 
