@@ -2,15 +2,15 @@
 lib = File.expand_path('../lib/', __FILE__)
 $:.unshift lib unless $:.include?(lib)
 
-require 'tanked/version'
+require 'index_tanked/version'
 
 Gem::Specification.new do |s|
-  s.name        = "tanked"
-  s.version     = Tanked::GEM_VERSION
+  s.name        = "index_tanked"
+  s.version     = IndexTanked::GEM_VERSION
   s.platform    = Gem::Platform::RUBY
   s.authors     = "Adam Kittelson"
   s.email       = "info@zencoder.com"
-  s.homepage    = "http://github.com/zencoder/tanked"
+  s.homepage    = "http://github.com/zencoder/index_tanked"
   s.summary     = "Index Tank <http://indextank.com> Active Record etc integration library."
   s.description = "Index Tank <http://indextank.com> Active Record etc integration library."
   s.add_dependency "indextank"
