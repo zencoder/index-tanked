@@ -1,4 +1,4 @@
-module Tanked
+module IndexTanked
 
   class Configuration
 
