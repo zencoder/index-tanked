@@ -1,5 +1,6 @@
 require 'indextank'
 
-require 'tanked/tanked'
-require 'tanked/version'
-require 'tanked/configuration'
+require 'index_tanked/index_tanked'
+require 'index_tanked/class_methods'
+require 'index_tanked/version'
+require 'index_tanked/configuration'
