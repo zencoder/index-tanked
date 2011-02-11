@@ -7,6 +7,10 @@ module IndexTanked
   end
 
   def add_to_index_tank
+    index_tank_index.document(index_tank_doc_id).add(index_tank_data)
+  end
+
+  def index_tank_data
     field_data = {}
 
     text_values = self.class.index_tanked_text.map { |method| get_value_from method }
@@ -19,9 +23,7 @@ module IndexTanked
     field_data.merge!(:text => text_values.compact.uniq.join(" "))
 
     field_data.merge!(:model => self.class.name)
-    field_data.merge!(:timestamp => created_at.to_i)
-
-    index_tank_index.document(index_tank_doc_id).add(field_data)
+    #field_data.merge!(:timestamp => created_at.to_i)
   end
 
   def index_tank_doc_id
