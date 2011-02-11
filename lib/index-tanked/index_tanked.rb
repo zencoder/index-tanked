@@ -1,9 +1,12 @@
 module IndexTanked
 
-  def self.included(klass)
-    klass.instance_variable_set(:@index_tanked_fields, [])
-    klass.instance_variable_set(:@index_tanked_text, [])
-    klass.extend ClassMethods
+  def self.included(base)
+    base.instance_variable_set(:@index_tanked_fields, [])
+    base.instance_variable_set(:@index_tanked_text, [])
+    base.class_eval do
+      include ActiveRecordDefaults if defined?(ActiveRecord::Base) && ancestors.include?(ActiveRecord::Base)
+      extend ClassMethods
+    end
   end
 
   def add_to_index_tank
@@ -23,7 +26,6 @@ module IndexTanked
     field_data.merge!(:text => text_values.compact.uniq.join(" "))
 
     field_data.merge!(:model => self.class.name)
-    #field_data.merge!(:timestamp => created_at.to_i)
   end
 
   def index_tank_doc_id
