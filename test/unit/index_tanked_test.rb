@@ -31,7 +31,7 @@ class IndexTankedTest < Test::Unit::TestCase
 
     context "the class" do
       should "have the appropriate class methods" do
-        class_methods = [:index_tanked_fields, :index_tanked_text, :index_tanked_index, :index_tanked_doc_id, :index_tanked]
+        class_methods = [:index_tanked_fields, :index_tanked_text, :index_tanked_index_name, :index_tanked_doc_id, :index_tanked]
         assert class_methods.all? { |method| TestObject.respond_to? method }
       end
 
@@ -48,7 +48,7 @@ class IndexTankedTest < Test::Unit::TestCase
       end
 
       should "know which index it should use" do
-        assert_equal 'index_tanked_test', TestObject.index_tanked_index
+        assert_equal 'index_tanked_test', TestObject.index_tanked_index_name
       end
     end
 
