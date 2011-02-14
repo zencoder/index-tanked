@@ -2,6 +2,7 @@ module IndexTanked
 
   def self.included(base)
     base.instance_variable_set(:@index_tanked_fields, [])
+    base.instance_variable_set(:@index_tanked_variables, [])
     base.instance_variable_set(:@index_tanked_text, [])
     base.class_eval do
       extend ClassMethods
@@ -25,6 +26,14 @@ module IndexTanked
       field_data[field] = get_value_from method
       text_values << (options.has_key?(:text) ? get_value_from(options[:text]) : field_data[field])
     end
+
+    variables = self.class.index_tanked_variables.inject({}) do |variables, (variable, method)|
+      variables[variable] = get_value_from method
+      variables
+    end
+
+    field_data[:variables] = variables unless variables.empty?
+
     field_data.merge!(:text => text_values.compact.uniq.join(" "))
   end
 
@@ -39,7 +48,7 @@ protected
   end
 
   def index_tank_index
-    @index_tank_index ||= self.class.index_tanked_index
+    @index_tank_index ||= self.class.index_tank_index
   end
 
   def get_value_from(method)

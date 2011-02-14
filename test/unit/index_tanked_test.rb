@@ -24,6 +24,8 @@ class IndexTankedTest < Test::Unit::TestCase
           field  :field5, lambda { |test_object| "field-five_#{test_object.field5}"}
           text   "some-arbitrary-text"
           text   "some-more-just-cause"
+          var 0, :field1
+          var 1, lambda { |test_object| test_object.field2 }
         end
       end
 
@@ -69,6 +71,8 @@ class IndexTankedTest < Test::Unit::TestCase
         assert_equal 'four', data[:field4]
         assert_equal 'field-five_five', data[:field5]
         assert_equal 'some-arbitrary-text some-more-just-cause one third_field_three some-string field-five_five', data[:text]
+        assert_equal 'one', data[:variables][0]
+        assert_equal 'two', data[:variables][1]
       end
     end
 

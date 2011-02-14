@@ -1,6 +1,6 @@
 module IndexTanked
   module ClassMethods
-    attr_reader :index_tanked_fields, :index_tanked_text, :index_tanked_index_name, :index_tanked_doc_id
+    attr_reader :index_tanked_fields, :index_tanked_text, :index_tanked_index_name, :index_tanked_doc_id, :index_tanked_variables
 
     def index_tanked(index=nil, &block)
       @index_tanked_index_name = index || IndexTanked::Configuration.index
@@ -20,18 +20,22 @@ module IndexTanked
       @index_tanked_text << method
     end
 
+    def var(variable, method)
+      @index_tanked_variables << [variable, method]
+    end
+
     def search(search_string=nil, options={})
       index_tank_index.search(index_tanked_search_string(search_string, options))
+    end
+
+    def index_tank_index
+      index_tank_api_client.indexes index_tanked_index_name
     end
 
   protected
 
     def index_tank_api_client
       IndexTank::Client.new Configuration.url
-    end
-
-    def index_tank_index
-      index_tank_api_client.indexes index_tanked_index_name
     end
 
     def index_tanked_search_string(search_string=nil, options={})
