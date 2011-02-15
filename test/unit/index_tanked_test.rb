@@ -64,15 +64,15 @@ class IndexTankedTest < Test::Unit::TestCase
       end
 
       should "have the correct data for index tank" do
-        data = @test_object.index_tank_data
-        assert_equal 'one', data[:field1]
-        assert_equal 'two', data[:field2]
-        assert_equal 'three', data[:third_field]
-        assert_equal 'four', data[:field4]
-        assert_equal 'field-five_five', data[:field5]
-        assert_equal 'some-arbitrary-text some-more-just-cause one third_field_three some-string field-five_five', data[:text]
-        assert_equal 'one', data[:variables][0]
-        assert_equal 'two', data[:variables][1]
+        field_data, other_data = *@test_object.index_tank_data
+        assert_equal 'one', field_data[:field1]
+        assert_equal 'two', field_data[:field2]
+        assert_equal 'three', field_data[:third_field]
+        assert_equal 'four', field_data[:field4]
+        assert_equal 'field-five_five', field_data[:field5]
+        assert_equal 'some-arbitrary-text some-more-just-cause one third_field_three some-string field-five_five', field_data[:text]
+        assert_equal 'one', other_data[:variables][0]
+        assert_equal 'two', other_data[:variables][1]
       end
     end
 

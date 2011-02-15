@@ -14,11 +14,12 @@ module IndexTanked
   end
 
   def add_to_index_tank
-    index_tank_index.document(index_tank_doc_id).add(index_tank_data)
+    index_tank_index.document(index_tank_doc_id).add(*index_tank_data)
   end
 
   def index_tank_data
     field_data = {}
+    other_data = {}
 
     text_values = self.class.index_tanked_text.map { |method| get_value_from method }
 
@@ -27,14 +28,17 @@ module IndexTanked
       text_values << (options.has_key?(:text) ? get_value_from(options[:text]) : field_data[field])
     end
 
+    field_data.merge!(:text => text_values.compact.uniq.join(" "))
+
     variables = self.class.index_tanked_variables.inject({}) do |variables, (variable, method)|
       variables[variable] = get_value_from method
       variables
     end
 
-    field_data[:variables] = variables unless variables.empty?
+    other_data[:variables] = variables unless variables.empty?
 
-    field_data.merge!(:text => text_values.compact.uniq.join(" "))
+    [field_data, other_data]
+
   end
 
   def index_tank_doc_id

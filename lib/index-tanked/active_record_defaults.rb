@@ -5,14 +5,16 @@ module IndexTanked
     module InstanceMethods
 
       def index_tank_data
-        field_data = super
-        if field_data[:variables]
-          field_data[:variables].merge!(0 => id)
+        field_data, other_data = *super
+        if other_data[:variables]
+          other_data[:variables].merge!(0 => id)
         else
-          field_data[:variables] = {0 => id}
+          other_data[:variables] = {0 => id}
         end
         field_data.merge!(:timestamp => created_at.to_i)
         field_data.merge!(:model => self.class.name)
+
+        [field_data, other_data]
       end
 
       def index_tank_doc_id
