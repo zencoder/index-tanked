@@ -24,12 +24,12 @@ module IndexTanked
     module ClassMethods
 
       def search(search_string=nil, options={})
-        api_search_result = index_tank_index.search(index_tanked_search_string(search_string, options))
+        api_search_result = index_tank_index.search(index_tanked_search_string(search_string), options)
         ActiveRecordSearchResult.new(api_search_result, self)
       end
 
     protected
-      def index_tanked_search_string(search_string=nil, options={})
+      def index_tanked_search_string(search_string=nil)
         [super, "model:#{name}"].join(" ")
       end
     end
