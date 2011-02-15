@@ -25,7 +25,8 @@ module IndexTanked
     end
 
     def search(search_string=nil, options={})
-      index_tank_index.search(index_tanked_search_string(search_string, options))
+      api_search_result = index_tank_index.search(index_tanked_search_string(search_string, options))
+      SearchResult.new(api_search_result)
     end
 
     def index_tank_index

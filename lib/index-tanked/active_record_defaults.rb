@@ -24,15 +24,8 @@ module IndexTanked
     module ClassMethods
 
       def search(search_string=nil, options={})
-        results = super
-        ids = results['results'].map { |result| result['docid'].gsub(/#{name}:/, '').to_i }
-        if options[:return] && options[:return] == :ids
-          ids
-        elsif options[:return] && options[:return] == :records
-          find(*ids)
-        else
-          results
-        end
+        api_search_result = index_tank_index.search(index_tanked_search_string(search_string, options))
+        ActiveRecordSearchResult.new(api_search_result, self)
       end
 
     protected
