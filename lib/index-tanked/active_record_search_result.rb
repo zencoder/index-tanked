@@ -2,8 +2,8 @@ module IndexTanked
 
   class ActiveRecordSearchResult < SearchResult
 
-    def initialize(search_result, model)
-      @raw_result = search_result
+    def initialize(search_string, index, model, options={})
+      super(search_string, index, options)
       @model = model
     end
 

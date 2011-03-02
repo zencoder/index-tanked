@@ -24,9 +24,8 @@ module IndexTanked
       @index_tanked_variables << [variable, method]
     end
 
-    def search(search_string=nil, options={})
-      api_search_result = index_tank_index.search(index_tanked_search_string(search_string), options)
-      SearchResult.new(api_search_result)
+    def search(search_string, options={})
+      SearchResult.new(index_tanked_search_string(search_string), index_tank_index, options)
     end
 
     def index_tank_index
@@ -39,8 +38,8 @@ module IndexTanked
       IndexTank::Client.new Configuration.url
     end
 
-    def index_tanked_search_string(search_string=nil, options={})
-      [search_string, options[:fields]].join(" ")
+    def index_tanked_search_string(search_string, options={})
+      [search_string, options[:fields]].compact.join(" ")
     end
 
   end

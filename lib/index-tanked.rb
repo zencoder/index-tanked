@@ -1,4 +1,5 @@
 require 'indextank'
+require 'will_paginate/collection'
 
 require 'index-tanked/index_tanked'
 require 'index-tanked/active_record_defaults'
