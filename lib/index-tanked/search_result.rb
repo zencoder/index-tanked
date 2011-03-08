@@ -6,9 +6,9 @@ module IndexTanked
 
     def initialize(search_string, index, options={})
       @page = options.delete(:page) || 1
-      @per_page = options.delete(:per_page) || 10
+      @per_page = options.delete(:per_page) || 15
 
-      @results ||= WillPaginate::Collection.create(@page, @per_page) do |pager|
+      @results = WillPaginate::Collection.create(@page, @per_page) do |pager|
         @raw_result = index.search(search_string, options.merge(:start => pager.offset, :len => pager.per_page))
         pager.replace(@raw_result['results'])
         pager.total_entries = @raw_result["matches"] unless pager.total_entries

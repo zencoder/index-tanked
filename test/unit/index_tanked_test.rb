@@ -15,7 +15,7 @@ class IndexTankedTest < Test::Unit::TestCase
           @field1, @field2, @field3, @field4, @field5 = args
         end
 
-        index_tanked 'index_tanked_test' do
+        index_tank 'index_tanked_test' do
           doc_id lambda { |test_object| "test-#{test_object.field1}" }
           field  :field1
           field  :field2, :text => nil
@@ -32,25 +32,25 @@ class IndexTankedTest < Test::Unit::TestCase
     end
 
     context "the class" do
-      should "have the appropriate class methods" do
-        class_methods = [:index_tanked_fields, :index_tanked_text, :index_tanked_index_name, :index_tanked_doc_id, :index_tanked]
+      should "have access to it's companion object" do
+        class_methods = [:index_tanked]
         assert class_methods.all? { |method| TestObject.respond_to? method }
       end
 
       should "be indexing 5 fields" do
-        assert_equal 5, TestObject.index_tanked_fields.size
+        assert_equal 5, TestObject.index_tanked.fields.size
       end
 
       should "adding one item to the text field" do
-        assert_equal 2, TestObject.index_tanked_text.size
+        assert_equal 2, TestObject.index_tanked.texts.size
       end
 
       should "have a method by which to estabish the document id of an instance" do
-        assert TestObject.index_tanked_doc_id.is_a? Proc
+        assert TestObject.index_tanked.doc_id_value.is_a? Proc
       end
 
       should "know which index it should use" do
-        assert_equal 'index_tanked_test', TestObject.index_tanked_index_name
+        assert_equal 'index_tanked_test', TestObject.index_tanked.index_name
       end
     end
 
@@ -60,11 +60,11 @@ class IndexTankedTest < Test::Unit::TestCase
       end
 
       should "know it's document id" do
-        assert_equal 'test-one', @test_object.index_tank_doc_id
+        assert_equal 'test-one', @test_object.index_tanked.doc_id
       end
 
       should "have the correct data for index tank" do
-        field_data, other_data = *@test_object.index_tank_data
+        field_data, other_data = *@test_object.index_tanked.data
         assert_equal 'one', field_data[:field1]
         assert_equal 'two', field_data[:field2]
         assert_equal 'three', field_data[:third_field]
