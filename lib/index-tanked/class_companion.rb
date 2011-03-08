@@ -2,12 +2,11 @@ module IndexTanked
   class ClassCompanion
     attr_reader :fields, :variables, :texts, :doc_id_value, :index_name
 
-    def initialize(index, klass)
+    def initialize(index)
       @fields = []
       @variables = []
       @texts = []
       @index_name = index || IndexTanked::Configuration.index
-      @klass = klass
     end
 
     def doc_id(method)
