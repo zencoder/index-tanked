@@ -3,7 +3,7 @@ module IndexTanked
     attr_reader :index_tanked
 
     def index_tank(index=nil, &block)
-      @index_tanked ||= IndexTanked::ClassCompanion.new(index, self)
+      @index_tanked = IndexTanked::ClassCompanion.new(index, self)
       @index_tanked.instance_exec &block
     end
 

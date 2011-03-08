@@ -12,13 +12,25 @@ module IndexTanked
       end
 
       def records(options={})
-        WillPaginate::Collection.create(@page, @per_page) do |pager|
-          records = @model.find(ids, options)
-          pager.replace(records)
-          pager.total_entries = results.total_entries unless pager.total_entries
+        @model.find(ids, options)
+      end
+
+      def paginate(options={})
+        original_options = options.clone
+
+        @options[:page] = options.delete(:page)
+        @options[:per_page] = options.delete(:per_page)
+
+        begin
+          WillPaginate::Collection.create(@options[:page], @options[:per_page]) do |pager|
+            pager.replace(records(options))
+            pager.total_entries = results.total_entries unless pager.total_entries
+          end
+        rescue IndexTanked::SearchError
+          @model.paginate(original_options)
         end
       end
-      
+
     end
   end
 end

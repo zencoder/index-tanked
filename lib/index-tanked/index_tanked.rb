@@ -1,4 +1,7 @@
 module IndexTanked
+
+  class SearchError < StandardError; end
+
   def self.included(base)
     base.class_eval do
       include IndexTanked::InstanceMethods
