@@ -30,13 +30,9 @@ module IndexTanked
     def index
       api_client.indexes @index_name
     end
-    
-    def api_client
-      IndexTank::Client.new Configuration.url
-    end
 
-    def search_string(search_string, options={})
-      [search_string, options[:fields]].compact.join(" ")
+    def api_client
+      @api_client ||= IndexTank::Client.new Configuration.url
     end
 
   end
