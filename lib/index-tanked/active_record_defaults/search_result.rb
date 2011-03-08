@@ -18,8 +18,8 @@ module IndexTanked
       def paginate(options={})
         original_options = options.clone
 
-        @options[:page] = options.delete(:page)
-        @options[:per_page] = options.delete(:per_page)
+        @options[:page] = options.delete(:page) || 1
+        @options[:per_page] = options.delete(:per_page) || 15
 
         begin
           WillPaginate::Collection.create(@options[:page], @options[:per_page]) do |pager|
