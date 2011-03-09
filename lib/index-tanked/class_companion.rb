@@ -27,11 +27,12 @@ module IndexTanked
     end
 
     def index
+      return if api_client.nil?
       api_client.indexes @index_name
     end
 
     def api_client
-      @api_client ||= IndexTank::Client.new Configuration.url
+      @api_client ||= (IndexTank::Client.new IndexTanked::Configuration.url) if IndexTanked::Configuration.available?
     end
 
   end

@@ -2,8 +2,14 @@ module IndexTanked
   module ActiveRecordDefaults
     module InstanceMethods
 
+      def add_to_index_tank
+        index_tanked.index.document(index_tanked.doc_id).add(*index_tank_data) if IndexTanked::Configuration.available?
+      end
+
+   protected
+
       def index_tank_data
-        field_data, other_data = *super
+        field_data, other_data = index_tanked.data
         if other_data[:variables]
           other_data[:variables].merge!(0 => id)
         else
@@ -13,10 +19,6 @@ module IndexTanked
         field_data.merge!(:model => self.class.name)
 
         [field_data, other_data]
-      end
-
-      def index_tank_doc_id
-        super || "#{self.class.name}:#{id}"
       end
 
     end

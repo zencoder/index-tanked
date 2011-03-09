@@ -9,6 +9,11 @@ module IndexTanked
       if defined?(ActiveRecord::Base) && ancestors.include?(ActiveRecord::Base)
         include ActiveRecordDefaults::InstanceMethods
         extend ActiveRecordDefaults::ClassMethods
+
+        after_save do |instance|
+          instance.add_to_index_tank
+        end
+
       end
     end
   end
