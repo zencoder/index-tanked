@@ -11,6 +11,10 @@ module IndexTanked
       SearchResult.new(index_tanked_search_string(search_string), @index_tanked.index, options)
     end
 
+    def delete_from_index_tank(docid)
+      @index_tanked.index.document(docid).delete
+    end
+
 protected
 
     def index_tanked_search_string(search_string, options={})
