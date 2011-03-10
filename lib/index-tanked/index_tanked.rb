@@ -14,6 +14,10 @@ module IndexTanked
           instance.add_to_index_tank
         end
 
+        after_destroy do |instance|
+          instance.class.delete_from_index_tank(instance.id)
+        end
+
       end
     end
   end

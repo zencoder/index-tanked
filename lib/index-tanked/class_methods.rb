@@ -12,7 +12,7 @@ module IndexTanked
     end
 
     def delete_from_index_tank(docid)
-      @index_tanked.index.document(docid).delete
+      @index_tanked.index.document(docid).delete if IndexTanked::Configuration.available?
     end
 
 protected
