@@ -7,12 +7,53 @@ module IndexTanked
       @index_tanked.instance_exec &block
     end
 
-    def search(search_string, options={})
+    def search_index_tank(search_string, options={})
       SearchResult.new(index_tanked_search_string(search_string), @index_tanked.index, options)
     end
 
-    def delete_from_index_tank(docid)
-      @index_tanked.index.document(docid).delete if IndexTanked::Configuration.index_available?
+    def add_to_index_tank(doc_id, data, fallback=true)
+      begin
+        if IndexTanked::Configuration.timeout
+          Timeout.timeout(IndexTanked::Configuration.timout) do
+            @index_tanked.index.document(doc_id).add(data)
+          end
+        else
+          @index_tanked.index.document(doc_id).add(data)
+        end
+      rescue Timeout::Error, StandardError => e
+        if fallback && IndexTanked::Configuration.add_to_index_fallback
+          IndexTanked::Configuration.add_to_index_fallback.call(doc_id, data, e)
+        else
+          raise
+        end
+      end
+    end
+
+    def add_to_index_tank_without_fallback(doc_id, data)
+      add_to_index_tank(doc_id, data, false)
+    end
+
+    def delete_from_index_tank(docid, fallback=true)
+      begin
+        raise IndexTanked::IndexingDisabledError unless IndexTanked::Configuration.index_available?
+        if IndexTanked::Configuration.timeout
+          Timeout.timeout(IndexTanked::Configuration.timout) do
+            @index_tanked.index.document(docid).delete
+          end
+        else
+          @index_tanked.index.document(docid).delete
+        end
+      rescue Timeout::Error, StandardError => e
+        if fallback && IndexTanked::Configuration.index_fallback
+          IndexTanked::Configuration.index_fallback.call(doc_id, data, e)
+        else
+          raise
+        end
+      end
+    end
+
+    def delete_from_index_tank_without_fallback(doc_id)
+      delete_from_index_tank(doc_id, false)
     end
 
 protected

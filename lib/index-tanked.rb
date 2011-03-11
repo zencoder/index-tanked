@@ -1,3 +1,5 @@
+require 'timeout'
+
 require 'indextank'
 require 'will_paginate/collection'
 
