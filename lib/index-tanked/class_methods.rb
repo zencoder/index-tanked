@@ -13,6 +13,7 @@ module IndexTanked
 
     def add_to_index_tank(doc_id, data, fallback=true)
       begin
+        raise IndexTanked::IndexingDisabledError unless IndexTanked::Configuration.index_available?
         if IndexTanked::Configuration.timeout
           Timeout.timeout(IndexTanked::Configuration.timout) do
             @index_tanked.index.document(doc_id).add(data)
