@@ -18,6 +18,6 @@ Gem::Specification.new do |s|
   s.add_development_dependency "shoulda"
   s.add_development_dependency "mocha"
   s.add_development_dependency "webmock"
-  s.files        = Dir.glob("bin/**/*") + Dir.glob("lib/**/*") + %w(LICENSE README.markdown Rakefile)
+  s.files        = Dir.glob("lib/**/*") + %w(LICENSE README.markdown Rakefile)
   s.require_path = "lib"
 end
