@@ -32,7 +32,7 @@ module IndexTanked
     end
 
     def api_client
-      @api_client ||= (IndexTank::Client.new IndexTanked::Configuration.url) if IndexTanked::Configuration.available?
+      @api_client ||= (IndexTank::Client.new IndexTanked::Configuration.url) if IndexTanked::Configuration.index_available?
     end
 
   end

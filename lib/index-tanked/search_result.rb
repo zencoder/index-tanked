@@ -43,7 +43,7 @@ module IndexTanked
 
       @results ||= WillPaginate::Collection.create(@page, @per_page) do |pager|
         begin
-          raise IndexTanked::SearchError, "index tank search is disabled in configuration" unless IndexTanked::Configuration.available?
+          raise IndexTanked::SearchError, "index tank search is disabled in configuration" unless IndexTanked::Configuration.search_available?
           raise IndexTanked::SearchError, "No index has been provided" if @index.nil?
           @raw_result ||= @index.search(@search_string, @options.merge(:start => pager.offset, :len => pager.per_page))
         rescue StandardError => e

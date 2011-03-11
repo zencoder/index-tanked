@@ -3,7 +3,7 @@ module IndexTanked
     module InstanceMethods
 
       def add_to_index_tank
-        index_tanked.index.document(index_tanked.doc_id).add(*index_tank_data) if IndexTanked::Configuration.available?
+        index_tanked.index.document(index_tanked.doc_id).add(*index_tank_data) if IndexTanked::Configuration.index_available?
       end
 
    protected
