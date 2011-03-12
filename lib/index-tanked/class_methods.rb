@@ -23,7 +23,7 @@ module IndexTanked
         end
       rescue Timeout::Error, StandardError => e
         if fallback && IndexTanked::Configuration.add_to_index_fallback
-          IndexTanked::Configuration.add_to_index_fallback.call({:class => self
+          IndexTanked::Configuration.add_to_index_fallback.call({:class => self,
                                                                  :data => data,
                                                                  :doc_id => doc_id,
                                                                  :error => e})
