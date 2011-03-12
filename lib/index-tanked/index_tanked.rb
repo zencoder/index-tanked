@@ -12,10 +12,15 @@ module IndexTanked
         include ActiveRecordDefaults::InstanceMethods
         extend ActiveRecordDefaults::ClassMethods
 
+        attr_accessor :_ancestors_to_index
+
+        self._ancestors_to_index = ancestors.select{|a|
+          a != self && a != ActiveRecord::Base && a.ancestors.include?(ActiveRecord::Base)
+        }
+
         after_save do |instance|
-          relevant_ancestors = instance.class.ancestors.select{|a| a.ancestors.include?(ActiveRecord::Base)}
           instance.add_to_index_tank
-          relevant_ancestors.each do |relevant_ancestor|
+          self.class._ancestors_to_index.each do |relevant_ancestor|
             instance.becomes(relevant_ancestor).add_to_index_tank
           end
         end
