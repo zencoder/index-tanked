@@ -16,10 +16,10 @@ module IndexTanked
         raise IndexTanked::IndexingDisabledError unless IndexTanked::Configuration.index_available?
         if IndexTanked::Configuration.timeout
           Timeout.timeout(IndexTanked::Configuration.timout) do
-            @index_tanked.index.document(doc_id).add(data)
+            @index_tanked.index.document(doc_id).add(*data)
           end
         else
-          @index_tanked.index.document(doc_id).add(data)
+          @index_tanked.index.document(doc_id).add(*data)
         end
       rescue Timeout::Error, StandardError => e
         if fallback && IndexTanked::Configuration.add_to_index_fallback
