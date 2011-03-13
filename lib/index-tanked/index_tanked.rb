@@ -12,7 +12,9 @@ module IndexTanked
         include ActiveRecordDefaults::InstanceMethods
         extend ActiveRecordDefaults::ClassMethods
 
-        attr_accessor :_ancestors_to_index
+        class << self
+          attr_accessor :_ancestors_to_index
+        end
 
         self._ancestors_to_index = ancestors.select{|a|
           a != self && a != ActiveRecord::Base && a.ancestors.include?(ActiveRecord::Base)
@@ -20,13 +22,16 @@ module IndexTanked
 
         after_save do |instance|
           instance.add_to_index_tank
-          self.class._ancestors_to_index.each do |relevant_ancestor|
-            instance.becomes(relevant_ancestor).add_to_index_tank
+          self._ancestors_to_index.each do |ancestor|
+            instance.becomes(ancestor).add_to_index_tank
           end
         end
 
         after_destroy do |instance|
           instance.class.delete_from_index_tank(instance.id)
+          self._ancestors_to_index.each do |ancestor|
+            instance.becomes(ancestor).delete_from_index_tank(instance.id)
+          end
         end
 
       end

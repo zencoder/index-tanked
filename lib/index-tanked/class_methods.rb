@@ -37,18 +37,18 @@ module IndexTanked
       add_to_index_tank(doc_id, data, false)
     end
 
-    def delete_from_index_tank(docid, fallback=true)
+    def delete_from_index_tank(doc_id, fallback=true)
       begin
         raise IndexTanked::IndexingDisabledError unless IndexTanked::Configuration.index_available?
         if IndexTanked::Configuration.timeout
           Timeout.timeout(IndexTanked::Configuration.timout) do
-            @index_tanked.index.document(docid).delete
+            @index_tanked.index.document(doc_id).delete
           end
         else
-          @index_tanked.index.document(docid).delete
+          @index_tanked.index.document(doc_id).delete
         end
       rescue Timeout::Error, StandardError => e
-        if fallback && IndexTanked::Configuration.index_fallback
+        if fallback && IndexTanked::Configuration.delete_from_index_fallback
           IndexTanked::Configuration.delete_from_index_fallback.call({:class => self,
                                                                       :doc_id => doc_id,
                                                                       :error => e})
