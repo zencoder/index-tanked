@@ -2,8 +2,8 @@ module IndexTanked
   module ClassMethods
     attr_reader :index_tanked
 
-    def index_tank(index=nil, &block)
-      @index_tanked = IndexTanked::ClassCompanion.new(index)
+    def index_tank(options={}, &block)
+      @index_tanked = IndexTanked::ClassCompanion.new(options)
       @index_tanked.instance_exec &block
     end
 

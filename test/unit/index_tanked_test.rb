@@ -5,6 +5,7 @@ class IndexTankedTest < Test::Unit::TestCase
     setup do
 
       IndexTanked::Configuration.url = "http://example.com"
+      IndexTanked::Configuration.index = "test_index"
 
       class TestObject
         include IndexTanked
@@ -50,7 +51,7 @@ class IndexTankedTest < Test::Unit::TestCase
       end
 
       should "know which index it should use" do
-        assert_equal 'index_tanked_test', TestObject.index_tanked.index_name
+        assert_equal 'test_index', TestObject.index_tanked.index_name
       end
     end
 

@@ -1,12 +1,15 @@
 module IndexTanked
   class ClassCompanion
-    attr_reader :fields, :variables, :texts, :doc_id_value, :index_name
+    attr_reader :fields, :variables, :texts, :index_name, :doc_id_value
 
-    def initialize(index)
+    def initialize(options={})
       @fields = []
       @variables = []
       @texts = []
-      @index_name = index || IndexTanked::Configuration.index
+      @index_name = options[:index] || IndexTanked::Configuration.index
+      @index_tank_url = options[:url] || IndexTanked::Configuration.url
+      raise IndexTanked::IndexTankURLNotProvidedError if @index_tank_url.nil?
+      raise IndexTanked::IndexTankIndexNameNotProvidedError if @index_name.nil?
     end
 
     def doc_id(method)
@@ -27,12 +30,22 @@ module IndexTanked
     end
 
     def index
-      return if api_client.nil?
       api_client.indexes @index_name
     end
 
     def api_client
-      @api_client ||= (IndexTank::Client.new IndexTanked::Configuration.url) if IndexTanked::Configuration.index_available?
+      @api_client ||= (IndexTank::Client.new @index_tank_url)
+    end
+
+    def get_value_from(instance, method)
+      case method
+      when Symbol
+        instance.send method
+      when Proc
+        method.call(instance)
+      else
+        method
+      end
     end
 
   end

@@ -3,6 +3,8 @@ module IndexTanked
   class SearchError < StandardError; end
   class SearchingDisabledError < StandardError; end
   class IndexingDisabledError < StandardError; end
+  class IndexTankURLNotProvidedError < StandardError; end
+  class IndexTankIndexNameNotProvidedError < StandardError; end
 
   def self.included(base)
     base.class_eval do
