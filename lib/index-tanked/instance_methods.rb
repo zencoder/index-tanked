@@ -2,7 +2,7 @@ module IndexTanked
   module InstanceMethods
 
     def add_to_index_tank
-      doc_id = index_tanked.doc_id
+      doc_id = index_tanked.doc_id_value
       data = index_tanked.data
       self.class.add_to_index_tank(doc_id, data)
     end
