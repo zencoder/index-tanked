@@ -123,32 +123,32 @@ module IndexTanked
             end
           end
         end
-      end
-
-      context "when provided with three arguments" do
-        setup do
-          @id_lambda = lambda { |instance| instance.index_id }
-          @companion.field :id, @id_lambda, :text => nil
-        end
-
-        should "add an array to the field list" do
-          assert_equal 1, @companion.fields.size
-          assert @companion.fields.first.is_a? Array
-        end
-
-        context "the array" do
+      
+        context "when provided with three arguments" do
           setup do
-            @array = @companion.fields.first
+            @id_lambda = lambda { |instance| instance.index_id }
+            @companion.field :id, @id_lambda, :text => nil
           end
 
-          should "have 3 elements" do
-            assert_equal 3, @array.size
+          should "add an array to the field list" do
+            assert_equal 1, @companion.fields.size
+            assert @companion.fields.first.is_a? Array
           end
 
-          should "consist the name of the field to be indexed, the method to call, and the hash provided" do
-            assert_equal :id, @array[0]
-            assert_equal @id_lambda, @array[1]
-            assert_equal({:text => nil}, @array[2])
+          context "the array" do
+            setup do
+              @array = @companion.fields.first
+            end
+
+            should "have 3 elements" do
+              assert_equal 3, @array.size
+            end
+
+            should "consist the name of the field to be indexed, the method to call, and the hash provided" do
+              assert_equal :id, @array[0]
+              assert_equal @id_lambda, @array[1]
+              assert_equal({:text => nil}, @array[2])
+            end
           end
         end
       end
