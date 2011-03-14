@@ -15,7 +15,7 @@ module IndexTanked
       begin
         raise IndexTanked::IndexingDisabledError unless IndexTanked::Configuration.index_available?
         if IndexTanked::Configuration.timeout
-          Timeout.timeout(IndexTanked::Configuration.timout) do
+          Timeout::timeout(IndexTanked::Configuration.timout) do
             @index_tanked.index.document(doc_id).add(*data)
           end
         else
@@ -41,7 +41,7 @@ module IndexTanked
       begin
         raise IndexTanked::IndexingDisabledError unless IndexTanked::Configuration.index_available?
         if IndexTanked::Configuration.timeout
-          Timeout.timeout(IndexTanked::Configuration.timout) do
+          Timeout::timeout(IndexTanked::Configuration.timout) do
             @index_tanked.index.document(doc_id).delete
           end
         else
