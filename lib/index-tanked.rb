@@ -1,4 +1,10 @@
-require 'timeout'
+begin
+  require 'system_timer'
+  IndexTankedTimer = SystemTimer
+rescue LoadError
+  require 'timeout'
+  IndexTankedTimer = Timeout
+end
 
 require 'indextank'
 require 'will_paginate/collection'

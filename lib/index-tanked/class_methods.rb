@@ -7,15 +7,15 @@ module IndexTanked
       @index_tanked.instance_exec &block
     end
 
-    def search_index_tank(search_string, options={})
-      SearchResult.new(index_tanked_search_string(search_string), @index_tanked.index, options)
+    def search_index_tank(query, options={})
+      SearchResult.new(index_tanked.add_fields_to_query(query), index_tanked.index, options)
     end
 
     def add_to_index_tank(doc_id, data, fallback=true)
       begin
         raise IndexTanked::IndexingDisabledError unless IndexTanked::Configuration.index_available?
         if IndexTanked::Configuration.timeout
-          Timeout::timeout(IndexTanked::Configuration.timout) do
+          IndexTankedTimer::timeout(IndexTanked::Configuration.timeout) do
             @index_tanked.index.document(doc_id).add(*data)
           end
         else
@@ -41,7 +41,7 @@ module IndexTanked
       begin
         raise IndexTanked::IndexingDisabledError unless IndexTanked::Configuration.index_available?
         if IndexTanked::Configuration.timeout
-          Timeout::timeout(IndexTanked::Configuration.timout) do
+          IndexTankedTimer::timeout(IndexTanked::Configuration.timeout) do
             @index_tanked.index.document(doc_id).delete
           end
         else
