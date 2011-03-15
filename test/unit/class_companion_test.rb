@@ -190,6 +190,46 @@ module IndexTanked
           end
         end
       end
+
+      context "the index method" do
+        setup do
+          @index = @companion.index
+        end
+
+        should "return an IndexTank::Index" do
+          assert @index.is_a? IndexTank::Index
+        end
+      end
+
+      context "the api_client method" do
+        setup do
+          @client = @companion.api_client
+        end
+
+        should "return an IndexTank::Client" do
+          assert @client.is_a? IndexTank::Client
+        end
+      end
+
+      context "the get_value_from method" do
+        setup do
+          Struct.new("TestObject", :value) unless defined?(Struct::TestObject)
+          @test_object = Struct::TestObject.new("this is a value!")
+        end
+
+        should "call the method if a symbol is provided" do
+          assert_equal "this is a value!", @companion.get_value_from(@test_object, :value)
+        end
+
+        should "call the proc if a proc is provided" do
+          assert_equal "this is a value!", @companion.get_value_from(@test_object, lambda { |test| test.value })
+        end
+
+        should "return the provided value if anything else is provided" do
+          assert_equal "blerg", @companion.get_value_from(@test_object, "blerg")
+        end
+      end
+
     end
   end
 end
