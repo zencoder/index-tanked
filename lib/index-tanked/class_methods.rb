@@ -61,13 +61,6 @@ module IndexTanked
     def delete_from_index_tank_without_fallback(doc_id)
       delete_from_index_tank(doc_id, false)
     end
-
-protected
-
-    def index_tanked_search_string(search_string, options={})
-      [search_string, options[:fields]].compact.join(" ")
-    end
-
   end
 
 end

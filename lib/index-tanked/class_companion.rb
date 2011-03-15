@@ -48,5 +48,9 @@ module IndexTanked
       end
     end
 
+    def search_string(search_string, options={})
+      [search_string, options[:fields]].compact.join(" ")
+    end
+
   end
 end
