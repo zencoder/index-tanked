@@ -48,8 +48,8 @@ module IndexTanked
       end
     end
 
-    def search_string(search_string, options={})
-      [search_string, options[:fields]].compact.join(" ")
+    def add_fields_to_query(query, options={})
+      [query, options[:fields] && options[:fields].to_a.join(":")].compact.join(" ")
     end
 
   end

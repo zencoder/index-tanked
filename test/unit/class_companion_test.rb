@@ -230,6 +230,12 @@ module IndexTanked
         end
       end
 
+      context "#add_fields_to_query" do
+        should "add fields to the query" do
+          assert_equal "name:adam email:adam@zencoder.com", @companion.add_fields_to_query("name:adam", :fields => {:email => "adam@zencoder.com"})
+        end
+      end
+
     end
   end
 end
