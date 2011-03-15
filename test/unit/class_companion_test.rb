@@ -123,7 +123,7 @@ module IndexTanked
             end
           end
         end
-      
+
         context "when provided with three arguments" do
           setup do
             @id_lambda = lambda { |instance| instance.index_id }
@@ -150,6 +150,18 @@ module IndexTanked
               assert_equal({:text => nil}, @array[2])
             end
           end
+        end
+      end
+
+      context "the text method" do
+        should "add it's argument to the @texts array" do
+          @companion.text :herp
+          assert_equal 1, @companion.texts.size
+          assert_equal :herp, @companion.texts[0]
+
+          @companion.text :derp
+          assert_equal 2, @companion.texts.size
+          assert_equal :derp, @companion.texts[1]
         end
       end
     end
