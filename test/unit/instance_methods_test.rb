@@ -2,7 +2,7 @@ require 'test_helper'
 
 module IndexTanked
 
-  class InstanceCompanionTest < Test::Unit::TestCase
+  class InstanceMethodsTest < Test::Unit::TestCase
     context "An instance of a class with index-tanked included" do
       setup do
         class AnimalsRawr
@@ -33,30 +33,15 @@ module IndexTanked
         AnimalsRawr.index_tanked.variables.clear
       end
 
-      context "has a companion object for index tanked, the companion" do
-        setup do
-          @companion = @instance.index_tanked
-        end
-
-        should "serialize its data for adding to index tank" do
-          assert_equal [{:text => "animals fish dogs shiba inu",
-                         :fish => "trout",
-                         :dog => "shiba inu"},
-                        {:variables => { 0 => 42}}], @companion.data
-        end
-
-        should "generate a doc_id for the instance" do
-          assert_equal "animals/fish/trout/dog/shiba inu", @companion.doc_id
-        end
-
-        should "access its classes' index" do
-          assert @companion.index.is_a? IndexTank::Index
-        end
-
-        should "return an IndexTank::Client" do
-          assert @companion.api_client.is_a? IndexTank::Client
-        end
+      should "have an index_tanked companion object" do
+        assert @instance.index_tanked.is_a? IndexTanked::InstanceCompanion
       end
+
+      should "have a method to add itself to index tank" do
+        @instance.class.expects(:add_to_index_tank).with(@instance.index_tanked.doc_id, @instance.index_tanked.data).returns(nil)
+        @instance.add_to_index_tank
+      end
+
     end
   end
 end
