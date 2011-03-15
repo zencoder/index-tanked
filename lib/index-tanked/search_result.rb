@@ -4,10 +4,10 @@ module IndexTanked
 
     attr_reader :page, :per_page
 
-    def initialize(search_string, index, options={})
+    def initialize(query, index, options={})
       @index = index
       @options = options
-      @search_string = search_string
+      @query = query
     end
 
     def search_time
@@ -38,15 +38,16 @@ module IndexTanked
   protected
 
     def execute_search
-      @page = @options.delete(:page) || 1
-      @per_page = @options.delete(:per_page) || 15
+      @page ||= @options.delete(:page) || 1
+      @per_page ||= @options.delete(:per_page) || 15
 
       @results ||= WillPaginate::Collection.create(@page, @per_page) do |pager|
         begin
-          raise IndexTanked::SearchError, "index tank search is disabled in configuration" unless IndexTanked::Configuration.search_available?
-          raise IndexTanked::SearchError, "No index has been provided" if @index.nil?
-          @raw_result ||= @index.search(@search_string, @options.merge(:start => pager.offset, :len => pager.per_page))
+          raise SearchingDisabledError, "index tank search is disabled in configuration" unless IndexTanked::Configuration.search_available?
+          raise IndexTanked::SearchError, "No or invalid index has been provided" unless @index.is_a? IndexTank::Index
+          @raw_result ||= @index.search(@query, @options.merge(:start => pager.offset, :len => pager.per_page))
         rescue StandardError => e
+          raise if e.is_a? IndexTankedError
           raise IndexTanked::SearchError, "#{e.class}: #{e.message}"
         end
         pager.replace(@raw_result['results'])
