@@ -164,6 +164,32 @@ module IndexTanked
           assert_equal :derp, @companion.texts[1]
         end
       end
+
+      context "the var method" do
+        setup do
+          @companion.var 0, :var_0_value
+        end
+
+        should "add an array to the variables list" do
+          assert_equal 1, @companion.variables.size
+          assert @companion.variables.first.is_a? Array
+        end
+
+        context "the array" do
+          setup do
+            @array = @companion.variables.first
+          end
+
+          should "have 2 elements" do
+            assert_equal 2, @array.size
+          end
+
+          should "consist the variable number and the method to get its value" do
+            assert_equal 0, @array[0]
+            assert_equal :var_0_value, @array[1]
+          end
+        end
+      end
     end
   end
 end
