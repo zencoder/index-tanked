@@ -29,7 +29,12 @@ class IndexTankedTest < Test::Unit::TestCase
           var 1, lambda { |test_object| test_object.field2 }
         end
       end
+    end
 
+    teardown do
+      TestObject.index_tanked.fields.clear
+      TestObject.index_tanked.variables.clear
+      TestObject.index_tanked.texts.clear
     end
 
     context "the class" do

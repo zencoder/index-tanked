@@ -10,14 +10,14 @@ module IndexTanked
       end
 
       should "raise an error if no url is provided" do
-        assert_raises IndexTanked::IndexTankURLNotProvidedError do
+        assert_raises IndexTanked::URLNotProvidedError do
           Configuration.url = nil
           companion = ClassCompanion.new
         end
       end
 
       should "raise an error if no index is provided" do
-        assert_raises IndexTanked::IndexTankIndexNameNotProvidedError do
+        assert_raises IndexTanked::IndexNameNotProvidedError do
           Configuration.index = nil
           companion = ClassCompanion.new
         end

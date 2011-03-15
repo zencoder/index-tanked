@@ -15,13 +15,14 @@ module IndexTanked
       begin
         raise IndexTanked::IndexingDisabledError unless IndexTanked::Configuration.index_available?
         if IndexTanked::Configuration.timeout
-          IndexTankedTimer::timeout(IndexTanked::Configuration.timeout) do
+          IndexTankedTimer.timeout(IndexTanked::Configuration.timeout, TimeoutExceededError) do
+            sleep(IndexTanked::Configuration.timeout + 1) if $testing_index_tanked_timeout
             @index_tanked.index.document(doc_id).add(*data)
           end
         else
           @index_tanked.index.document(doc_id).add(*data)
         end
-      rescue Timeout::Error, StandardError => e
+      rescue StandardError => e
         if fallback && IndexTanked::Configuration.add_to_index_fallback
           IndexTanked::Configuration.add_to_index_fallback.call({:class => self,
                                                                  :data => data,
@@ -41,13 +42,14 @@ module IndexTanked
       begin
         raise IndexTanked::IndexingDisabledError unless IndexTanked::Configuration.index_available?
         if IndexTanked::Configuration.timeout
-          IndexTankedTimer::timeout(IndexTanked::Configuration.timeout) do
+          IndexTankedTimer.timeout(IndexTanked::Configuration.timeout, TimeoutExceededError) do
+            sleep(IndexTanked::Configuration.timeout + 1) if $testing_index_tanked_timeout
             @index_tanked.index.document(doc_id).delete
           end
         else
           @index_tanked.index.document(doc_id).delete
         end
-      rescue Timeout::Error, StandardError => e
+      rescue StandardError => e
         if fallback && IndexTanked::Configuration.delete_from_index_fallback
           IndexTanked::Configuration.delete_from_index_fallback.call({:class => self,
                                                                       :doc_id => doc_id,

@@ -1,10 +1,12 @@
 module IndexTanked
 
-  class SearchError < StandardError; end
-  class SearchingDisabledError < StandardError; end
-  class IndexingDisabledError < StandardError; end
-  class IndexTankURLNotProvidedError < StandardError; end
-  class IndexTankIndexNameNotProvidedError < StandardError; end
+  class IndexTankedError < StandardError; end
+  class SearchError < IndexTankedError; end
+  class SearchingDisabledError < IndexTankedError; end
+  class IndexingDisabledError < IndexTankedError; end
+  class URLNotProvidedError < IndexTankedError; end
+  class IndexNameNotProvidedError < IndexTankedError; end
+  class TimeoutExceededError < IndexTankedError; end
 
   def self.included(base)
     base.class_eval do
