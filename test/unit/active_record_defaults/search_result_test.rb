@@ -6,6 +6,7 @@ module IndexTanked
       context "A search result" do
         setup do
           IndexTanked::Configuration.add_to_index_fallback = lambda { |instance| nil }
+          Person.reset!
           (1..5).each { |n| Person.create! :name => "blah#{n}" }
           IndexTanked::Configuration.search_availability = true
           @search_result = SearchResult.new('bacon', IndexTank::Index.new('list_o_bacon'), Person, :page => 1, :per_page => 5)

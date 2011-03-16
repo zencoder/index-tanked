@@ -8,8 +8,8 @@ module IndexTanked
       @texts = []
       @index_name = options[:index] || IndexTanked::Configuration.index
       @index_tank_url = options[:url] || IndexTanked::Configuration.url
-      raise IndexTanked::URLNotProvidedError if @index_tank_url.nil?
-      raise IndexTanked::IndexNameNotProvidedError if @index_name.nil?
+      raise IndexTanked::URLNotProvidedError if @index_tank_url.nil? && IndexTanked::Configuration.index_available?
+      raise IndexTanked::IndexNameNotProvidedError if @index_name.nil? && IndexTanked::Configuration.index_available?
     end
 
     def doc_id(method)

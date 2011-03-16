@@ -6,6 +6,14 @@ module IndexTanked
     class ClassCompanionTest < Test::Unit::TestCase
       context "An activerecord class" do
         context "Initializing a class companion" do
+          setup do
+            Configuration.index_availability = true
+          end
+
+          teardown do
+            Configuration.index_availability = nil
+          end
+
           should "raise an error if no url is provided" do
             assert_raises IndexTanked::URLNotProvidedError do
               companion = ClassCompanion.new(Person, :index => "test-index")

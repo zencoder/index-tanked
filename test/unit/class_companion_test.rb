@@ -7,6 +7,11 @@ module IndexTanked
       setup do
         Configuration.url = "http://example.com"
         Configuration.index = "test_index"
+        Configuration.index_availability = true
+      end
+
+      teardown do
+        Configuration.index_availability = nil
       end
 
       should "raise an error if no url is provided" do
