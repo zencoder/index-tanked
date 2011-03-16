@@ -30,12 +30,12 @@ module IndexTanked
     end
 
     def index
-      raise IndexNameNotProvidedError if @index_name.nil?
+      return nil if @index_name.nil? || api_client.nil?
       api_client.indexes @index_name
     end
 
     def api_client
-      raise URLNotProvidedError if @index_tank_url.nil?
+      return nil if @index_tank_url.nil?
       @api_client ||= (IndexTank::Client.new @index_tank_url)
     end
 
