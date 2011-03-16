@@ -2,8 +2,10 @@ module IndexTanked
   module ActiveRecordDefaults
     class SearchResult < SearchResult
 
-      def initialize(search_string, index, model, options={})
-        super(search_string, index, options)
+      attr_reader :model
+
+      def initialize(query, index, model, options={})
+        super(query, index, options)
         @model = model
       end
 
