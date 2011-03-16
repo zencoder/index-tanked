@@ -28,7 +28,7 @@ module IndexTanked
             pager.replace(records(options))
             pager.total_entries = results.total_entries unless pager.total_entries
           end
-        rescue IndexTanked::SearchError
+        rescue IndexTankedError
           @model.paginate(original_options)
         end
       end
