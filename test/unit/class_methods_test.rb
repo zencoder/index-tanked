@@ -2,7 +2,7 @@ require 'test_helper'
 
 module IndexTanked
   class ClassMethodsTest < Test::Unit::TestCase
-    context "An class with index-tanked included" do
+    context "A class with index-tanked included" do
       setup do
 
         IndexTanked::Configuration.index_availability = true
