@@ -34,7 +34,7 @@ module IndexTanked
         after_destroy do |instance|
           doc_id = instance.index_tanked.doc_id
           instance.class.delete_from_index_tank(doc_id)
-          instnace.class._ancestors_to_index.each do |ancestor|
+          instance.class._ancestors_to_index.each do |ancestor|
             doc_id = instance.index_tanked.doc_id
             instance.becomes(ancestor).delete_from_index_tank(doc_id)
           end
