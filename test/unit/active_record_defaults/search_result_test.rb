@@ -30,6 +30,11 @@ module IndexTanked
                 @search_result.raw_result
               end
             end
+
+            should "call paginate on the original model / scope if paginate is called on the search result" do
+              Person.expects(:paginate).with({:per_page => 5, :page => 1})
+              @search_result.paginate(:per_page => 5, :page => 1)
+            end
           end
         end
 
@@ -88,6 +93,14 @@ module IndexTanked
             assert_equal 5, @search_result.records.size
             assert @search_result.records.all? { |record| record.is_a? Person }
             assert_equal "blah1", @search_result.records.first.name
+          end
+
+          should "retrieve paginated records from the database" do
+            @records = @search_result.paginate(:per_page => 5, :page => 1)
+            assert_equal 5, @records.size
+            assert @records.all? { |record| record.is_a? Person }
+            assert_equal "blah1", @records.first.name
+            assert @records.is_a? WillPaginate::Collection
           end
         end
       end
