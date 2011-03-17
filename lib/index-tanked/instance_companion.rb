@@ -34,7 +34,7 @@ module IndexTanked
 
     def document_for_batch_addition
       fields, document = *data
-      document.merge!(:doc_id => doc_id)
+      document.merge!(:docid => doc_id)
       document.merge!(:fields => fields)
       document
     end

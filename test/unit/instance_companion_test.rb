@@ -47,7 +47,7 @@ module IndexTanked
 
         should "serialize its data into a document hash for adding in batches" do
           document = {
-            :doc_id => "animals/fish/trout/dog/shiba inu",
+            :docid => "animals/fish/trout/dog/shiba inu",
             :fields => {
               :fish => "trout", :dog => "shiba inu", :text => "animals fish dogs shiba inu"
             },

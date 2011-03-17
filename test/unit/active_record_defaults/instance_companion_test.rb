@@ -45,7 +45,7 @@ module IndexTanked
 
           should "serialize its data into a document hash for adding in batches" do
             document = {
-              :doc_id => "Person:#{@instance.id}",
+              :docid => "Person:#{@instance.id}",
               :fields => {
                 :text => "some text, why not",
                 :name => "Alphonse",
