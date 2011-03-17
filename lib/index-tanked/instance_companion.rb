@@ -32,6 +32,13 @@ module IndexTanked
       [field_data, other_data]
     end
 
+    def document_for_batch_addition
+      fields, document = *data
+      document.merge!(:doc_id => doc_id)
+      document.merge!(:fields => fields)
+      document
+    end
+
     def doc_id
       @index_tanked.get_value_from(@companion, @index_tanked.doc_id_value)
     end

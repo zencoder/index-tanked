@@ -45,6 +45,19 @@ module IndexTanked
                         {:variables => { 0 => 42}}], @companion.data
         end
 
+        should "serialize its data into a document hash for adding in batches" do
+          document = {
+            :doc_id => "animals/fish/trout/dog/shiba inu",
+            :fields => {
+              :fish => "trout", :dog => "shiba inu", :text => "animals fish dogs shiba inu"
+            },
+            :variables => {
+              0 => 42
+            }
+          }
+          assert_equal document, @companion.document_for_batch_addition
+        end
+
         should "generate a doc_id for the instance" do
           assert_equal "animals/fish/trout/dog/shiba inu", @companion.doc_id
         end
