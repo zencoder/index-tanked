@@ -7,7 +7,7 @@ require 'sqlite3'
 
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), 'models'))
-require 'index-tanked'
+require 'index_tanked'
 require 'person'
 
 class Test::Unit::TestCase

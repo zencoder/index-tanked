@@ -16,7 +16,7 @@ module IndexTanked
       @doc_id_value = method
     end
 
-    def field(field_name, method=field_name, options = {})
+    def field(field_name, method=field_name, options={})
       method, options = field_name, method if method.is_a? Hash
       @fields <<  [field_name, method, options]
     end
