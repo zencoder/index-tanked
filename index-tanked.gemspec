@@ -2,7 +2,7 @@
 lib = File.expand_path('../lib/', __FILE__)
 $:.unshift lib unless $:.include?(lib)
 
-require 'index_tanked/version'
+require 'index-tanked/version'
 
 Gem::Specification.new do |s|
   s.name         = "index-tanked"
