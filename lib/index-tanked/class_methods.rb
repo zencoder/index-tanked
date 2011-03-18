@@ -38,16 +38,6 @@ module IndexTanked
       add_to_index_tank(doc_id, data, false)
     end
 
-    def add_all_to_index_tank(batch_size=1000)
-      count = 0
-      find_in_batches(:batch_size => batch_size) do |instances|
-        documents = instances.map { |instance| instance.index_tanked.document_for_batch_addition }
-        count += documents.size
-        index_tanked.index.batch_insert(documents)
-      end
-      count
-    end
-
     def delete_from_index_tank(doc_id, fallback=true)
       begin
         raise IndexTanked::IndexingDisabledError unless IndexTanked::Configuration.index_available?

@@ -15,6 +15,16 @@ module IndexTanked
         @doc_id_value || proc { |instance| "#{instance.class.name}:#{instance.id}"}
       end
 
+      def add_all_to_index_tank(batch_size=1000)
+        count = 0
+        find_in_batches(:batch_size => batch_size) do |instances|
+          documents = instances.map { |instance| instance.index_tanked.document_for_batch_addition }
+          count += documents.size
+          index_tanked.index.batch_insert(documents)
+        end
+        count
+      end
+
     end
   end
 end
