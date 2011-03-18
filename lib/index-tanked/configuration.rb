@@ -1,5 +1,4 @@
 module IndexTanked
-
   class Configuration
 
     class << self
