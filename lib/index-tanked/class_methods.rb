@@ -14,9 +14,10 @@ module IndexTanked
     def add_to_index_tank(doc_id, data, fallback=true)
       begin
         raise IndexTanked::IndexingDisabledError unless IndexTanked::Configuration.index_available?
-        if IndexTanked::Configuration.timeout
-          IndexTankedTimer.timeout(IndexTanked::Configuration.timeout, TimeoutExceededError) do
-            sleep(IndexTanked::Configuration.timeout + 1) if $testing_index_tanked_timeout
+        timeout = index_tanked.get_value_from(IndexTanked::Configuration.timeout)
+        if timeout
+          IndexTankedTimer.timeout(timeout, TimeoutExceededError) do
+            sleep(timeout + 1) if $testing_index_tanked_timeout
             @index_tanked.index.document(doc_id).add(*data)
           end
         else
@@ -41,9 +42,10 @@ module IndexTanked
     def delete_from_index_tank(doc_id, fallback=true)
       begin
         raise IndexTanked::IndexingDisabledError unless IndexTanked::Configuration.index_available?
-        if IndexTanked::Configuration.timeout
-          IndexTankedTimer.timeout(IndexTanked::Configuration.timeout, TimeoutExceededError) do
-            sleep(IndexTanked::Configuration.timeout + 1) if $testing_index_tanked_timeout
+        timeout = index_tanked.get_value_from(IndexTanked::Configuration.timeout)
+        if timeout
+          IndexTankedTimer.timeout(timeout, TimeoutExceededError) do
+            sleep(timeout + 1) if $testing_index_tanked_timeout
             @index_tanked.index.document(doc_id).delete
           end
         else
