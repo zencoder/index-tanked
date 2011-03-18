@@ -1,6 +1,8 @@
 module IndexTanked
-  module ActiveRecordDefaults
 
+  class CustomDocIdNotSupportedError < IndexTankedError; end
+
+  module ActiveRecordDefaults
     class ClassCompanion < IndexTanked::ClassCompanion
 
       attr_reader :model
@@ -14,8 +16,12 @@ module IndexTanked
         [super, "model:#{@model.name}"].compact.join(" ")
       end
 
+      def doc_id
+        raise CustomDocIdNotSupportedError
+      end
+
       def doc_id_value
-        @doc_id_value || lambda { |instance| "#{instance.class.name}:#{instance.id}"}
+        lambda { |instance| "#{instance.class.name}:#{instance.id}"}
       end
 
     end

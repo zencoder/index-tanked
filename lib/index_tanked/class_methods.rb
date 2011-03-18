@@ -24,10 +24,10 @@ module IndexTanked
         end
       rescue StandardError => e
         if fallback && IndexTanked::Configuration.add_to_index_fallback
-          IndexTanked::Configuration.add_to_index_fallback.call({:class => self,
-                                                                 :data => data,
+          IndexTanked::Configuration.add_to_index_fallback.call({:class  => self,
+                                                                 :data   => data,
                                                                  :doc_id => doc_id,
-                                                                 :error => e})
+                                                                 :error  => e})
         else
           raise
         end
@@ -51,9 +51,9 @@ module IndexTanked
         end
       rescue StandardError => e
         if fallback && IndexTanked::Configuration.delete_from_index_fallback
-          IndexTanked::Configuration.delete_from_index_fallback.call({:class => self,
+          IndexTanked::Configuration.delete_from_index_fallback.call({:class  => self,
                                                                       :doc_id => doc_id,
-                                                                      :error => e})
+                                                                      :error  => e})
         else
           raise
         end

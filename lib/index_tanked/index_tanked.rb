@@ -12,6 +12,7 @@ module IndexTanked
     base.class_eval do
       include IndexTanked::InstanceMethods
       extend IndexTanked::ClassMethods
+
       if defined?(ActiveRecord::Base) && ancestors.include?(ActiveRecord::Base)
         include ActiveRecordDefaults::InstanceMethods
         extend ActiveRecordDefaults::ClassMethods
@@ -21,7 +22,7 @@ module IndexTanked
         end
 
         self._ancestors_to_index = ancestors.select{|a|
-          a != self && a != ActiveRecord::Base && a.ancestors.include?(ActiveRecord::Base)
+          a != self && a != ActiveRecord::Base && a.ancestors.include?(ActiveRecord::Base) && !a.abstract_class?
         }
 
         after_save do |instance|
@@ -39,7 +40,6 @@ module IndexTanked
             instance.becomes(ancestor).delete_from_index_tank(doc_id)
           end
         end
-
       end
     end
   end

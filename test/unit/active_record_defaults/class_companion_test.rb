@@ -36,11 +36,12 @@ module IndexTanked
           should "know which model it belongs to" do
             assert_equal Person, @companion.model
           end
-          should "have a doc_id method that defines how to derive a doc_id for an instance" do
-            @person = Person.create! :name => 'Adam'
-            @companion.doc_id(proc { |person| "Person Named:#{person.name}" })
 
-            assert_equal "Person Named:Adam", @companion.get_value_from(@person, @companion.doc_id_value)
+          should "raise if doc_id method is called" do
+            @person = Person.create! :name => 'Adam'
+            assert_raises CustomDocIdNotSupportedError do
+              @companion.doc_id
+            end
           end
 
           should "have default to model:id format for the doc_id" do

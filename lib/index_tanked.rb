@@ -9,7 +9,7 @@ end
 require 'indextank'
 require 'will_paginate/collection'
 
-require 'index_tanked/index_tanked.rb'
+require 'index_tanked/index_tanked'
 require 'index_tanked/class_companion'
 require 'index_tanked/class_methods'
 require 'index_tanked/configuration'

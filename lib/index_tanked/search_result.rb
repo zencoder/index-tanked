@@ -1,43 +1,45 @@
 module IndexTanked
-
   class SearchResult
 
     attr_reader :page, :per_page
 
     def initialize(query, index, options={})
-      @index = index
+      @index   = index
       @options = options
-      @query = query
+      @query   = query
     end
 
-    def search_time
-      execute_search
+    def search_time(force=false)
+      execute_search(force)
       @raw_result['search_time']
     end
 
-    def facets
-      execute_search
+    def facets(force=false)
+      execute_search(force)
       @raw_result["facets"]
     end
 
-    def matches
-      execute_search
+    def matches(force=false)
+      execute_search(force)
       @raw_result["matches"]
     end
 
-    def results
-      execute_search
+    def results(force=false)
+      execute_search(force)
       @results
     end
 
-    def raw_result
-      execute_search
+    def raw_result(force=false)
+      execute_search(force)
       @raw_result
     end
 
+
   protected
 
-    def execute_search
+    def execute_search(force=false)
+      @results = @raw_result = nil if force
+
       @page ||= @options.delete(:page) || 1
       @per_page ||= @options.delete(:per_page) || 15
 
@@ -56,5 +58,4 @@ module IndexTanked
     end
 
   end
-
 end

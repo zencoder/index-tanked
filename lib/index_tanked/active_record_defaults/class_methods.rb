@@ -11,10 +11,6 @@ module IndexTanked
         SearchResult.new(index_tanked.add_fields_to_query(query), @index_tanked.index, self, options)
       end
 
-      def doc_id_value
-        @doc_id_value || proc { |instance| "#{instance.class.name}:#{instance.id}"}
-      end
-
       def add_all_to_index_tank(batch_size=1000)
         count = 0
         find_in_batches(:batch_size => batch_size) do |instances|

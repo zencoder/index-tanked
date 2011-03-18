@@ -3,10 +3,10 @@ module IndexTanked
     attr_reader :fields, :variables, :texts, :index_name, :doc_id_value
 
     def initialize(options={})
-      @fields = []
-      @variables = []
-      @texts = []
-      @index_name = options[:index] || IndexTanked::Configuration.index
+      @fields         = []
+      @variables      = []
+      @texts          = []
+      @index_name     = options[:index] || IndexTanked::Configuration.index
       @index_tank_url = options[:url] || IndexTanked::Configuration.url
       raise IndexTanked::URLNotProvidedError if @index_tank_url.nil? && (IndexTanked::Configuration.index_available? || IndexTanked::Configuration.search_available?)
       raise IndexTanked::IndexNameNotProvidedError if @index_name.nil? && (IndexTanked::Configuration.index_available? || IndexTanked::Configuration.search_available?)
