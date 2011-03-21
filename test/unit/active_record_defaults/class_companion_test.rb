@@ -81,7 +81,7 @@ module IndexTanked
               context "where the second argument is not a hash" do
                 setup do
                   @id_lambda = lambda { |instance| instance.index_id }
-                  @companion.field :id, @id_lambda
+                  @companion.field :id, @id_lambda, :depends_on => :id
                 end
 
                 should "add an array to the field list" do
@@ -101,7 +101,7 @@ module IndexTanked
                   should "consist the name of the field to be indexed, the method to call, and an empty options hash" do
                     assert_equal :id, @array[0]
                     assert_equal @id_lambda, @array[1]
-                    assert_equal({}, @array[2])
+                    assert_equal({:depends_on => :id}, @array[2])
                   end
                 end
               end
@@ -137,7 +137,7 @@ module IndexTanked
             context "when provided with three arguments" do
               setup do
                 @id_lambda = lambda { |instance| instance.index_id }
-                @companion.field :id, @id_lambda, :text => nil
+                @companion.field :id, @id_lambda, :text => nil, :depends_on => :id
               end
 
               should "add an array to the field list" do
@@ -157,7 +157,7 @@ module IndexTanked
                 should "consist the name of the field to be indexed, the method to call, and the hash provided" do
                   assert_equal :id, @array[0]
                   assert_equal @id_lambda, @array[1]
-                  assert_equal({:text => nil}, @array[2])
+                  assert_equal({:text => nil, :depends_on => :id}, @array[2])
                 end
               end
             end

@@ -26,6 +26,7 @@ module IndexTanked
         end
         [field_data, other_data]
       end
+
     end
   end
 end

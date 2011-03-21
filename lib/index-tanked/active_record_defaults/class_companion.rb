@@ -75,10 +75,25 @@ module IndexTanked
 
         field = @fields.last
         method = field[1]
+        method_without_sugar = method.to_s.sub(/[\?=]$/, '')
         options = field[2]
 
-        if method.is_a?(Symbol) && !model.column_names.include?(method.to_s.sub(/[\?=]$/, '')) && (options[:depends_on].nil? || options[:depends_on].empty?)
-          raise MissingFieldDependencyError
+        if options[:depends_on].nil? || (options[:depends_on].is_a?(Array) && options[:depends_on].empty?)
+          case method
+          when Symbol
+            if !model.column_names.include?(method_without_sugar)
+              raise MissingFieldDependencyError, "The #{field_name} field requires a dependency to be specified"
+            end
+          when Proc
+            raise MissingFieldDependencyError, "The #{field_name} field requires a dependency to be specified"
+          end
+        end
+
+        dependencies = [options[:depends_on] || method_without_sugar].flatten.compact.map(&:to_s)
+        invalid_dependencies = dependencies - model.column_names
+
+        if !invalid_dependencies.empty?
+          raise InvalidFieldDependencyError, "The following field dependencies are invalid: #{invalid_dependencies.inspect}"
         end
 
         @fields
