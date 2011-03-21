@@ -10,8 +10,8 @@ module IndexTanked
             include IndexTanked
 
             index_tank :index => 'index-test', :url => "http://example.com" do
-              field  :name, :text => nil
-              text   "some text, why not"
+              field :name, :text => nil
+              text  "some text, why not"
               var 0, 42
             end
           end
@@ -70,6 +70,18 @@ module IndexTanked
           should "return an IndexTank::Client" do
             assert @companion.api_client.is_a? IndexTank::Client
           end
+        end
+
+        should "reload the object when it goes to index and gets an ActiveRecord::MissingAttributeError" do
+          person = Person.find(@instance.id, :select => "id")
+
+          assert_raises IndexTanked::ActiveRecordDefaults::InstanceCompanion::MissingAttributeError do
+            person.name
+          end
+
+          person.index_tanked.data
+
+          assert_equal "Alphonse", person.name
         end
       end
     end
