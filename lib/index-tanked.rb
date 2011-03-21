@@ -1,9 +1,11 @@
-begin
-  require 'system_timer'
-  IndexTankedTimer = SystemTimer
-rescue LoadError
-  require 'timeout'
-  IndexTankedTimer = Timeout
+module IndexTanked
+  begin
+    require 'system_timer'
+    Timer = SystemTimer
+  rescue LoadError
+    require 'timeout'
+    Timer = Timeout
+  end
 end
 
 require 'indextank'

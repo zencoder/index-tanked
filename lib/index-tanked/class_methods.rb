@@ -20,7 +20,7 @@ module IndexTanked
           IndexTanked::Configuration.timeout
         end
         if timeout
-          IndexTankedTimer.timeout(timeout, TimeoutExceededError) do
+          IndexTanked::Timer.timeout(timeout, TimeoutExceededError) do
             sleep(timeout + 1) if $testing_index_tanked_timeout
             @index_tanked.index.document(doc_id).add(*data)
           end
@@ -52,7 +52,7 @@ module IndexTanked
           IndexTanked::Configuration.timeout
         end
         if timeout
-          IndexTankedTimer.timeout(timeout, TimeoutExceededError) do
+          IndexTanked::Timer.timeout(timeout, TimeoutExceededError) do
             sleep(timeout + 1) if $testing_index_tanked_timeout
             @index_tanked.index.document(doc_id).delete
           end
