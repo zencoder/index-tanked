@@ -93,7 +93,7 @@ module IndexTanked
         invalid_dependencies = dependencies - model.column_names
 
         if !invalid_dependencies.empty?
-          raise InvalidFieldDependencyError, "The following field dependencies are invalid: #{invalid_dependencies.inspect}"
+          raise InvalidFieldDependencyError, "The following field dependencies are invalid: #{invalid_dependencies.join(', ')}"
         end
 
         @fields

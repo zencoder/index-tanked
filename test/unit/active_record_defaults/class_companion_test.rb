@@ -182,6 +182,17 @@ module IndexTanked
                   @companion.field(:slug, :depends_on => [:id, :name])
                 end
               end
+
+              should "raise an InvalidFieldDependencyError when an item in depends_on is not a column in the database table" do
+                assert_raises IndexTanked::InvalidFieldDependencyError do
+                  begin
+                    @companion.field(:slug, :depends_on => [:id, :name, :love_sweet_love, :apples])
+                  rescue IndexTanked::InvalidFieldDependencyError => e
+                    assert_equal e.message, "The following field dependencies are invalid: love_sweet_love, apples"
+                    raise
+                  end
+                end
+              end
             end
           end
 
