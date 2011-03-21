@@ -70,6 +70,15 @@ module IndexTanked
           should "return an IndexTank::Client" do
             assert @companion.api_client.is_a? IndexTank::Client
           end
+
+          should "return false for for dependencies_changed? if no dependent fields have changed" do
+            assert_equal false, @companion.dependencies_changed?
+          end
+
+          should "return true for for dependencies_changed? if dependent fields have changed" do
+            @instance.name = "fowlduck"
+            assert_equal true, @companion.dependencies_changed?
+          end
         end
 
         should "reload the object when it goes to index and gets an ActiveRecord::MissingAttributeError" do
