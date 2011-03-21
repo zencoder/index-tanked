@@ -161,6 +161,28 @@ module IndexTanked
                 end
               end
             end
+
+            context "when the field name doesn't match the column name" do
+              setup do
+                class ::Person
+                  def slug
+                    "Person:#{id}:#{name}"
+                  end
+                end
+              end
+
+              should "raise a MissingFieldDependencyError when the method doesn't match the column and a depends_on was not provided" do
+                assert_raises IndexTanked::MissingFieldDependencyError do
+                  @companion.field(:slug)
+                end
+              end
+
+              should "not raise a MissingFieldDependencyError when the method doesn't match the column and a depends_on was provided" do
+                assert_nothing_raised do
+                  @companion.field(:slug, :depends_on => [:id, :name])
+                end
+              end
+            end
           end
 
           context "the text method" do
@@ -248,7 +270,6 @@ module IndexTanked
           end
 
         end
-
 
       end
     end

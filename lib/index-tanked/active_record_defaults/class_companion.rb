@@ -44,6 +44,20 @@ module IndexTanked
         end
       end
 
+      def field(field_name, method=field_name, options={})
+        super
+
+        field = @fields.last
+        method = field[1]
+        options = field[2]
+
+        if method.is_a?(Symbol) && !model.column_names.include?(method.to_s.sub(/[\?=]$/, '')) && (options[:depends_on].nil? || options[:depends_on].empty?)
+          raise MissingFieldDependencyError
+        end
+
+        @fields
+      end
+
     end
   end
 end

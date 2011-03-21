@@ -7,6 +7,7 @@ module IndexTanked
   class URLNotProvidedError < IndexTankedError; end
   class IndexNameNotProvidedError < IndexTankedError; end
   class TimeoutExceededError < IndexTankedError; end
+  class MissingFieldDependencyError < IndexTankedError; end
 
   def self.included(base)
     base.class_eval do
