@@ -27,6 +27,10 @@ module IndexTanked
         [field_data, other_data]
       end
 
+      def dependencies_changed?
+        @companion.class.index_tanked.dependent_fields.any?{|field| @companion.send("#{field}_changed?") }
+      end
+
     end
   end
 end

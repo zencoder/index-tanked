@@ -28,9 +28,11 @@ module IndexTanked
         }
 
         after_save do |instance|
-          instance.add_to_index_tank
-          instance.class._ancestors_to_index.each do |ancestor|
-            instance.becomes(ancestor).add_to_index_tank
+          if instance.index_tanked.dependencies_changed?
+            instance.add_to_index_tank
+            instance.class._ancestors_to_index.each do |ancestor|
+              instance.becomes(ancestor).add_to_index_tank
+            end
           end
         end
 
