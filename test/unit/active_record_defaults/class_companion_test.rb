@@ -269,6 +269,65 @@ module IndexTanked
             end
           end
 
+          context "the dependent_fields_for_select method" do
+            setup do
+              class ::Person
+                def slug
+                  "Person:#{id}:#{name}"
+                end
+              end
+
+              @companion.field(:name)
+              @companion.field(:slug, :depends_on => [:id, :name])
+            end
+
+            context "when no additional fields are passed" do
+              should "return all dependencies" do
+                assert_same_elements %w{name id created_at}, @companion.dependent_fields_for_select
+              end
+            end
+
+            context "when additional fields are passed" do
+              should "return the dependencies plus whatever else is passed" do
+                assert_same_elements %w{name id created_at your_mom}, @companion.dependent_fields_for_select("your_mom")
+              end
+            end
+          end
+
+          context "the dependent_fields_as_strings method" do
+            setup do
+              class ::Person
+                def slug
+                  "Person:#{id}:#{name}"
+                end
+              end
+
+              @companion.field(:name)
+              @companion.field(:slug, :depends_on => [:id, :name])
+            end
+
+            should "return the dependencies as strings" do
+              assert_same_elements %w{name id created_at}, @companion.dependent_fields_as_strings
+            end
+          end
+
+          context "the dependent_fields method" do
+            setup do
+              class ::Person
+                def slug
+                  "Person:#{id}:#{name}"
+                end
+              end
+
+              @companion.field(:name)
+              @companion.field(:slug, :depends_on => [:id, :name])
+            end
+
+            should "return the dependent fields as symbols" do
+              assert_same_elements [:name, :id, :created_at], @companion.dependent_fields
+            end
+          end
+
         end
 
       end
