@@ -51,13 +51,13 @@ module IndexTanked
         fields.join(', ')
       end
 
-      def retry_on_error(options={}, &block)
+      def retry_on_error(options={})
         times            = options[:times] || 3
         delay_multiplier = options[:delay_multiplier] || 0
         excepts          = [options[:except]].compact.flatten
         count            = 0
         begin
-          instance_eval(&block)
+          yield
         rescue Timeout::Error, StandardError => e
           if excepts.include?(e.class)
             raise e
