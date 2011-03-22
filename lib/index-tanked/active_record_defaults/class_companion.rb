@@ -43,11 +43,12 @@ module IndexTanked
       end
 
       def dependent_fields_for_select(*additional_fields)
-        if additional_fields.empty?
+        fields = if additional_fields.empty?
           dependent_fields_as_strings
         else
           (dependent_fields_as_strings + additional_fields.map(&:to_s)).uniq
         end
+        fields.join(', ')
       end
 
       def retry_on_error(options={}, &block)
