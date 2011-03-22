@@ -9,18 +9,12 @@ module IndexTanked
           IndexTanked::Configuration.index_availability = true
 
           class ::Person
-            include IndexTanked
+            include IndexTanked unless ancestors.include? IndexTanked::InstanceMethods
 
             index_tank :index => 'test-index', :url => 'http://example.com' do
               field :name
             end
           end
-        end
-
-        teardown do
-          Person.index_tanked.fields.clear
-          Person.index_tanked.variables.clear
-          Person.index_tanked.texts.clear
         end
 
         should "have access to its companion object" do

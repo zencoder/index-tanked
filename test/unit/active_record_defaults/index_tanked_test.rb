@@ -7,7 +7,7 @@ module IndexTanked
         setup do
           Configuration.index_availability = true
           class ::Person
-            include IndexTanked
+            include IndexTanked unless ancestors.include? IndexTanked::InstanceMethods
 
             index_tank :index => 'test-index', :url => 'http://example.com' do
               field :name
