@@ -9,6 +9,27 @@ module IndexTanked
         @search_result = SearchResult.new('bacon', IndexTank::Index.new('list_o_bacon'), :page => 1, :per_page => 5)
       end
 
+      context "without a query" do
+        setup do
+          @search_result = SearchResult.new(nil, IndexTank::Index.new('list_o_bacon'), :page => 1, :per_page => 5)
+        end
+
+        should "raise an exception when any of its methods are called" do
+          assert_raises SearchError do
+            @search_result.raw_result
+          end
+        end
+
+        should "be an error because there was no query" do
+          begin
+            @search_result.raw_result
+          rescue SearchError => e
+            assert_equal "No query provided", e.message
+          end
+        end
+
+      end
+
       context "without an index" do
         setup do
           @search_result = SearchResult.new('bacon', nil, :page => 1, :per_page => 5)

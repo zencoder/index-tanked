@@ -51,7 +51,8 @@ module IndexTanked
     end
 
     def add_fields_to_query(query, options={})
-      [query, options[:fields] && options[:fields].to_a.join(":")].compact.join(" ")
+      return nil if query.blank? && options[:fields].blank?
+      [query, options[:fields] && options[:fields].to_a.join(":")].compact.join(" ").strip
     end
 
   end

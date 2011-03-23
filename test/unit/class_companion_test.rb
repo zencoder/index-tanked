@@ -236,8 +236,16 @@ module IndexTanked
       end
 
       context "#add_fields_to_query" do
-        should "add fields to the query" do
+        should "add fields to the query provided" do
           assert_equal "name:adam email:adam@zencoder.com", @companion.add_fields_to_query("name:adam", :fields => {:email => "adam@zencoder.com"})
+        end
+
+        should "construct the query from fields if no query was provided " do
+          assert_equal "email:adam@zencoder.com", @companion.add_fields_to_query(nil, :fields => {:email => "adam@zencoder.com"})
+        end
+
+        should "return nil if no query or fields were provided" do
+          assert_nil @companion.add_fields_to_query(nil)
         end
       end
 

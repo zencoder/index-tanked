@@ -13,7 +13,8 @@ module IndexTanked
       end
 
       def add_fields_to_query(query, options={})
-        [super, "model:#{@model.name}"].compact.join(" ")
+        return nil if super.nil?
+        [super, "model:#{@model.name}"].compact.join(" ").strip
       end
 
       def doc_id

@@ -47,6 +47,7 @@ module IndexTanked
         begin
           raise SearchingDisabledError, "index tank search is disabled in configuration" unless IndexTanked::Configuration.search_available?
           raise IndexTanked::SearchError, "No or invalid index has been provided" unless @index.is_a? IndexTank::Index
+          raise IndexTanked::SearchError, "No query provided" if @query.nil?
           @raw_result ||= @index.search(@query, @options.merge(:start => pager.offset, :len => pager.per_page))
         rescue StandardError => e
           raise if e.is_a? IndexTankedError

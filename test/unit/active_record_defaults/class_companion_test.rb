@@ -278,6 +278,14 @@ module IndexTanked
               assert_equal "name:adam email:adam@zencoder.com model:Person",
                            @companion.add_fields_to_query("name:adam", :fields => {:email => "adam@zencoder.com"})
             end
+
+            should "construct the query from fields if no query was provided " do
+              assert_equal "email:adam@zencoder.com model:Person", @companion.add_fields_to_query(nil, :fields => {:email => "adam@zencoder.com"})
+            end
+
+            should "return nil if no query or fields were provided" do
+              assert_nil @companion.add_fields_to_query(nil)
+            end
           end
 
           context "the dependent_fields_for_select method" do
