@@ -11,9 +11,10 @@ module IndexTanked
         SearchResult.new(index_tanked.add_fields_to_query(query), @index_tanked.index, self, options)
       end
 
-      def add_all_to_index_tank(batch_size=50)
+      def add_all_to_index_tank(options={})
+        options[:batch_size] ||= 50
         count = 0
-        find_in_batches(:batch_size => batch_size) do |instances|
+        find_in_batches(options) do |instances|
           documents = instances.map { |instance| instance.index_tanked.document_for_batch_addition }
           count += documents.size
           index_tanked.retry_on_error do
