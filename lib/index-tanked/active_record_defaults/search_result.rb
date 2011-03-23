@@ -15,7 +15,7 @@ module IndexTanked
 
       def records(options={})
         base = @model
-        base.scoped(:conditions => {:id => ids})
+        base = base.scoped(:conditions => {:id => ids})
         records_found = base.all(options)
         @missing_ids = ids - records_found.map(&:id)
         begin

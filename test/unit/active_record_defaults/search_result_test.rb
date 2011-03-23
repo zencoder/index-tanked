@@ -60,7 +60,7 @@ module IndexTanked
         context "whose search has successfully executed" do
           setup do
             @search_result.instance_exec do
-              @raw_result = {"results"=>[{"docid"=>"Person:1"}, {"docid"=>"Person:2"}, {"docid"=>"Person:3"}, {"docid"=>"Person:4"}, {"docid"=>"Person:5"}, {"docid"=>"Person:6"}, {"docid"=>"Person:7"}], "search_time"=>"0.002", "facets"=>{}, "matches"=>7}
+              @raw_result = {"results"=>[{"docid"=>"Person:1"}, {"docid"=>"Person:2"}, {"docid"=>"Person:3"}, {"docid"=>"Person:5"}, {"docid"=>"Person:6"}, {"docid"=>"Person:7"}], "search_time"=>"0.002", "facets"=>{}, "matches"=>7}
             end
           end
 
@@ -80,7 +80,6 @@ module IndexTanked
             assert_equal [{"docid"=>"Person:1"},
                           {"docid"=>"Person:2"},
                           {"docid"=>"Person:3"},
-                          {"docid"=>"Person:4"},
                           {"docid"=>"Person:5"},
                           {"docid"=>"Person:6"},
                           {"docid"=>"Person:7"}],
@@ -89,18 +88,18 @@ module IndexTanked
           end
 
           should "have a list of database ids" do
-            assert_equal [1, 2, 3, 4, 5, 6, 7], @search_result.ids
+            assert_equal [1, 2, 3, 5, 6, 7], @search_result.ids
           end
 
           should "retrieve the records from the database" do
-            assert_equal 5, @search_result.records.size
+            assert_equal 4, @search_result.records.size
             assert @search_result.records.all? { |record| record.is_a? Person }
             assert_equal "blah1", @search_result.records.first.name
           end
 
           should "return database records even if there is a problem with the missing ids handler" do
             Configuration.missing_activerecord_ids_handler = lambda { |model, ids| raise StandardError }
-            assert_equal 5, @search_result.records.size
+            assert_equal 4, @search_result.records.size
             assert @search_result.records.all? { |record| record.is_a? Person }
             assert_equal "blah1", @search_result.records.first.name
             Configuration.missing_activerecord_ids_handler = nil
@@ -125,7 +124,7 @@ module IndexTanked
 
           should "retrieve paginated records from the database" do
             @records = @search_result.paginate(:per_page => 5, :page => 1)
-            assert_equal 5, @records.size
+            assert_equal 4, @records.size
             assert @records.all? { |record| record.is_a? Person }
             assert_equal "blah1", @records.first.name
             assert @records.is_a? WillPaginate::Collection
