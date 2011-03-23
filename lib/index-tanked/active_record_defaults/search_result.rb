@@ -2,7 +2,7 @@ module IndexTanked
   module ActiveRecordDefaults
     class SearchResult < SearchResult
 
-      attr_reader :model
+      attr_reader :model, :missing_ids
 
       def initialize(query, index, model, options={})
         super(query, index, options)
@@ -14,7 +14,17 @@ module IndexTanked
       end
 
       def records(options={})
-        @model.find(ids, options)
+        base = @model
+        base.scoped(:conditions => {:id => ids})
+        records_found = base.all(options)
+        @missing_ids = ids - records_found.map(&:id)
+        begin
+          if Configuration.missing_activerecord_ids_handler
+            Configuration.missing_activerecord_ids_handler.call(@model, @missing_ids)
+          end
+        ensure
+          return records_found
+        end
       end
 
       def paginate(options={})

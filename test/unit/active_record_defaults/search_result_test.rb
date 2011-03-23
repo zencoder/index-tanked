@@ -33,8 +33,8 @@ module IndexTanked
             end
 
             should "call paginate on the original model / scope if paginate is called on the search result" do
-              Person.expects(:paginate).with({:per_page => 5, :page => 1})
-              @search_result.paginate(:per_page => 5, :page => 1)
+              Person.expects(:paginate).with({:per_page => 10, :page => 1})
+              @search_result.paginate(:per_page => 10, :page => 1)
             end
           end
         end
@@ -60,7 +60,7 @@ module IndexTanked
         context "whose search has successfully executed" do
           setup do
             @search_result.instance_exec do
-              @raw_result = {"results"=>[{"docid"=>"Person:1"}, {"docid"=>"Person:2"}, {"docid"=>"Person:3"}, {"docid"=>"Person:4"}, {"docid"=>"Person:5"}], "search_time"=>"0.002", "facets"=>{}, "matches"=>25}
+              @raw_result = {"results"=>[{"docid"=>"Person:1"}, {"docid"=>"Person:2"}, {"docid"=>"Person:3"}, {"docid"=>"Person:4"}, {"docid"=>"Person:5"}, {"docid"=>"Person:6"}, {"docid"=>"Person:7"}], "search_time"=>"0.002", "facets"=>{}, "matches"=>7}
             end
           end
 
@@ -73,7 +73,7 @@ module IndexTanked
           end
 
           should "know how many total results were found" do
-            assert_equal 25, @search_result.matches
+            assert_equal 7, @search_result.matches
           end
 
           should "have a paginated collection of results" do
@@ -81,19 +81,46 @@ module IndexTanked
                           {"docid"=>"Person:2"},
                           {"docid"=>"Person:3"},
                           {"docid"=>"Person:4"},
-                          {"docid"=>"Person:5"}],
+                          {"docid"=>"Person:5"},
+                          {"docid"=>"Person:6"},
+                          {"docid"=>"Person:7"}],
                          @search_result.results
             assert @search_result.results.is_a? WillPaginate::Collection
           end
 
           should "have a list of database ids" do
-            assert_equal [1, 2, 3, 4, 5], @search_result.ids
+            assert_equal [1, 2, 3, 4, 5, 6, 7], @search_result.ids
           end
 
           should "retrieve the records from the database" do
             assert_equal 5, @search_result.records.size
             assert @search_result.records.all? { |record| record.is_a? Person }
             assert_equal "blah1", @search_result.records.first.name
+          end
+
+          should "return database records even if there is a problem with the missing ids handler" do
+            Configuration.missing_activerecord_ids_handler = lambda { |model, ids| raise StandardError }
+            assert_equal 5, @search_result.records.size
+            assert @search_result.records.all? { |record| record.is_a? Person }
+            assert_equal "blah1", @search_result.records.first.name
+            Configuration.missing_activerecord_ids_handler = nil
+          end
+
+          should "have a list of ids that were returned by the query, but that don't exist in the database once records has been called" do
+            @search_result.records
+            assert_same_elements [6, 7], @search_result.missing_ids
+          end
+
+          should "call the missing_ids_handler if it's been configured and there are missing_ids" do
+            Configuration.missing_activerecord_ids_handler = lambda { |model, ids| true }
+            Configuration.missing_activerecord_ids_handler.expects(:call).with(Person, [6,7])
+            @search_result.records
+            Configuration.missing_activerecord_ids_handler = nil
+          end
+
+          should "not call the missing_ids_handler if it hasn't been configured and there are missing_ids" do
+            Configuration.missing_activerecord_ids_handler.expects(:call).never
+            @search_result.records
           end
 
           should "retrieve paginated records from the database" do
