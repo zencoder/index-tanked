@@ -7,8 +7,9 @@ module IndexTanked
         @index_tanked.instance_exec &block
       end
 
+      # pass in scoped with an empty hash to give the search result a representation of the current scope
       def search_index_tank(query, options={})
-        SearchResult.new(index_tanked.add_fields_to_query(query), @index_tanked.index, self, options)
+        SearchResult.new(index_tanked.add_fields_to_query(query), @index_tanked.index, scoped({}), options)
       end
 
       def add_all_to_index_tank(options={})
