@@ -1,0 +1,3 @@
+class Programmer < Person
+  
+end

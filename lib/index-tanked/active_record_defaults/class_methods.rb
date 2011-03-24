@@ -16,6 +16,7 @@ module IndexTanked
         count = 0
         find_in_batches(options) do |instances|
           documents = instances.map { |instance| instance.index_tanked.document_for_batch_addition }
+          documents = documents.flatten.compact
           count += documents.size
           index_tanked.retry_on_error(:times => 5, :delay_multiplier => 2) do
             index_tanked.index.batch_insert(documents)

@@ -7,10 +7,10 @@ module IndexTanked
       context "An instance of a class with index-tanked included" do
         setup do
           class ::Person
-            include IndexTanked
+            include IndexTanked unless ancestors.include? IndexTanked::InstanceMethods
 
             index_tank :index => 'index-test', :url => "http://example.com" do
-              field :name, :text => nil
+              field :name
               text  "some text, why not"
               var 0, 42
             end
@@ -23,9 +23,6 @@ module IndexTanked
         end
 
         teardown do
-          Person.index_tanked.fields.clear
-          Person.index_tanked.texts.clear
-          Person.index_tanked.variables.clear
           IndexTanked::Configuration.add_to_index_fallback = nil
           IndexTanked::Configuration.index_availability = nil
         end
@@ -36,7 +33,7 @@ module IndexTanked
           end
 
           should "serialize its data for adding to index tank" do
-            assert_equal [{:text => "some text, why not",
+            assert_equal [{:text => "some text, why not Alphonse",
                            :name => "Alphonse",
                            :model => "Person",
                            :timestamp => @instance.created_at.to_i},
@@ -47,7 +44,7 @@ module IndexTanked
             document = {
               :docid => "Person:#{@instance.id}",
               :fields => {
-                :text => "some text, why not",
+                :text => "some text, why not Alphonse",
                 :name => "Alphonse",
                 :model => "Person",
                 :timestamp => @instance.created_at.to_i
@@ -58,6 +55,60 @@ module IndexTanked
             }
             assert_equal document, @companion.document_for_batch_addition
           end
+
+          context "An activerecord class inheriting from another activerecord class with single table inheritence" do
+            setup do
+              Programmer.reset!
+              class ::Programmer
+                include IndexTanked
+
+                index_tank :index => 'index-test', :url => "http://example.com" do
+                  field :name
+                  text  "some text, why not"
+                  var 0, 42
+                end
+              end
+
+              IndexTanked::Configuration.index_availability = false
+              IndexTanked::Configuration.add_to_index_fallback = lambda { |instance| return}
+
+              @programmer = Programmer.create! :name => 'Ted'
+            end
+
+            teardown do
+              IndexTanked::Configuration.add_to_index_fallback = nil
+              IndexTanked::Configuration.index_availability = nil
+            end
+
+            should "serialize its data into a document hash for adding in batches, including its ancestors" do
+              document = [{
+                :docid => "Programmer:#{@programmer.id}",
+                :fields => {
+                  :text => "some text, why not Ted",
+                  :name => "Ted",
+                  :model => "Programmer",
+                  :timestamp => @programmer.created_at.to_i
+                },
+                :variables => {
+                  0 => 42
+                }
+              },
+              {:docid => "Person:#{@programmer.id}",
+               :fields => {
+                 :text => "some text, why not Ted",
+                 :name => "Ted",
+                 :model => "Person",
+                 :timestamp => @instance.created_at.to_i
+               },
+               :variables => {
+                 0 => 42
+               }
+              }]
+              assert_same_elements document, @programmer.index_tanked.document_for_batch_addition
+            end
+          end
+
+
 
           should "generate a doc_id for the instance" do
             assert_equal "Person:#{@instance.id}", @companion.doc_id

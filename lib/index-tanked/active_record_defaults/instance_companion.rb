@@ -31,6 +31,18 @@ module IndexTanked
         @companion.class.index_tanked.dependent_fields.any?{|field| @companion.send("#{field}_changed?") }
       end
 
+      def document_for_batch_addition
+        ancestor = @companion.class._ancestors_to_index.first
+        if ancestor
+          documents = []
+          documents << super
+          documents << @companion.becomes(ancestor).index_tanked.document_for_batch_addition if ancestor
+          documents.flatten.compact
+        else
+          super
+        end
+      end
+
     end
   end
 end
