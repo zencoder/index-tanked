@@ -1,3 +1,3 @@
 module IndexTanked
-  GEM_VERSION = '0.1.9'
+  GEM_VERSION = '0.1.10'
 end
