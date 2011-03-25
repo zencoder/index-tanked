@@ -15,7 +15,11 @@ module IndexTanked
 
       def records(options={})
         base = @model
-        base = base.scoped(:conditions => {:id => ids})
+        if defined?(Squirrel) && base.respond_to?(:scoped_without_squirrel)
+          base = base.scoped_without_squirrel(:conditions => {:id => ids})
+        else
+          base = base.scoped(:conditions => {:id => ids})
+        end
         records_found = base.all(options)
         @missing_ids = ids - records_found.map(&:id)
         begin
@@ -41,6 +45,10 @@ module IndexTanked
         rescue IndexTankedError
           @model.paginate(original_options)
         end
+      end
+
+      def inspect
+        "<IndexTanked::ActiveRecordDefaults::SearchResult:#{object_id}, Query:'#{@query}'>"
       end
 
     end
