@@ -8,7 +8,7 @@ module IndexTanked
     end
 
     def search_index_tank(query, options={})
-      SearchResult.new(index_tanked.add_fields_to_query(query), index_tanked.index, options)
+      SearchResult.new(index_tanked.add_fields_to_query(query, options), index_tanked.index, options)
     end
 
     def add_to_index_tank(doc_id, data, fallback=true)
