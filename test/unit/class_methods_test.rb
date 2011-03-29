@@ -85,6 +85,14 @@ module IndexTanked
                 TestObject.add_to_index_tank('/docid/1', [{:apples => :delicious}])
               end
             end
+
+            should "not raise an exception if fallback is false" do
+              IndexTank::Document.any_instance.expects(:add).returns(200)
+              Timer.expects(:timeout).never
+              assert_nothing_raised do
+                TestObject.add_to_index_tank('/docid/1', [{:apples => :delicious}], false)
+              end
+            end
           end
         end
 
