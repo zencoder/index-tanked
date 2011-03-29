@@ -26,6 +26,12 @@ module IndexTanked
         count
       end
 
+      def delete_doc_ids_from_index_tank(doc_ids)
+        doc_ids.each do |doc_id|
+          delete_from_index_tank(doc_id)
+        end
+      end
+
     end
   end
 end

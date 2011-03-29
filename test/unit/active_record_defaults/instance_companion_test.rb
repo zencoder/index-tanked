@@ -80,6 +80,11 @@ module IndexTanked
               IndexTanked::Configuration.index_availability = nil
             end
 
+            should "call the after destroy callback with the right docids when an instance is destroyed" do
+              Programmer.expects(:delete_doc_ids_from_index_tank).with(["Programmer:#{@programmer.id}","Person:#{@programmer.id}"])
+              @programmer.destroy
+            end
+
             should "serialize its data into a document hash for adding in batches, including its ancestors" do
               document = [{
                 :docid => "Programmer:#{@programmer.id}",

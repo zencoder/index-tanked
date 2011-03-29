@@ -27,20 +27,9 @@ module IndexTanked
           a != self && a != ActiveRecord::Base && a.ancestors.include?(ActiveRecord::Base) && !a.abstract_class?
         }
 
-        after_save do |instance|
-          if instance.index_tanked.dependencies_changed?
-            instance.add_to_index_tank
-          end
-        end
+        after_save :add_to_index_tank_after_save
 
-        after_destroy do |instance|
-          doc_id = instance.index_tanked.doc_id
-          instance.class.delete_from_index_tank(doc_id)
-          instance.class._ancestors_to_index.each do |ancestor|
-            doc_id = instance.index_tanked.doc_id
-            instance.becomes(ancestor).delete_from_index_tank(doc_id)
-          end
-        end
+        after_destroy :delete_from_index_tank_after_destroy
       end
     end
   end
