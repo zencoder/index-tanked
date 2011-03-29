@@ -34,7 +34,7 @@ module IndexTanked
         end
 
         should "have a method to add itself to index tank" do
-          @instance.class.expects(:add_to_index_tank).with(@instance.index_tanked.doc_id, @instance.index_tanked.data).returns(nil)
+          @instance.class.expects(:add_to_index_tank).with(@instance.index_tanked.doc_id, @instance.index_tanked.data, true).returns(nil)
           @instance.add_to_index_tank
         end
       end

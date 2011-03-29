@@ -5,15 +5,15 @@ module IndexTanked
         @index_tanked ||= InstanceCompanion.new(self)
       end
 
-      def add_to_index_tank
-        self.class.add_to_index_tank(index_tanked.doc_id, index_tanked.data)
+      def add_to_index_tank(fallback=true)
+        self.class.add_to_index_tank(index_tanked.doc_id, index_tanked.data, fallback)
         ancestor = self.class._ancestors_to_index.first
-        self.becomes(ancestor).add_to_index_tank if ancestor
+        self.becomes(ancestor).add_to_index_tank(fallback) if ancestor
       end
 
-      def add_to_index_tank_after_save
+      def add_to_index_tank_after_save(fallback=true)
         if index_tanked.dependencies_changed?
-          add_to_index_tank
+          add_to_index_tank(fallback)
         end
       end
 
