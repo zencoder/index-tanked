@@ -14,6 +14,7 @@ module IndexTanked
 
       def add_all_to_index_tank(options={})
         options[:batch_size] ||= 50
+        options[:select] ||= index_tanked.dependent_fields_for_select
         count = 0
         find_in_batches(options) do |instances|
           documents = instances.map { |instance| instance.index_tanked.document_for_batch_addition }
