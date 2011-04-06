@@ -13,7 +13,7 @@ module IndexTanked
               field :name
             end
           end
-          stub_request(:put, 'example.com/v1/indexes/test-index/docs/')
+          stub_request(:put, 'example.com/v1/indexes/test-index/docs/').to_return(:body => '{}', :status => 200, :headers => { 'Content-Type' => 'application/json' } )
           @person = Person.create!(:name => 'Pedro')
         end
 

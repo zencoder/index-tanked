@@ -13,7 +13,7 @@ Gem::Specification.new do |s|
   s.homepage     = "http://github.com/zencoder/index-tanked"
   s.summary      = "Index Tank <http://indextank.com> integration library."
   s.description  = "Provides methods for indexing objects to Index Tank. Extra convenience methods included for Active Record objects."
-  s.add_dependency "indextank", '~>1.0.8'
+  s.add_dependency "indextank", '~>1.0.9'
   s.add_dependency "will_paginate", '~>2.3'
   s.add_development_dependency "shoulda"
   s.add_development_dependency "mocha"
