@@ -112,7 +112,7 @@ module IndexTanked
 
           should "call the missing_ids_handler if it's been configured and there are missing_ids" do
             Configuration.missing_activerecord_ids_handler = lambda { |model, ids| true }
-            Configuration.missing_activerecord_ids_handler.expects(:call).with(Person, [6,7])
+            Configuration.missing_activerecord_ids_handler.expects(:call).with('Person', [6,7])
             @search_result.records
             Configuration.missing_activerecord_ids_handler = nil
           end

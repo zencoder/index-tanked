@@ -24,7 +24,7 @@ module IndexTanked
         @missing_ids = ids - records_found.map(&:id)
         begin
           if Configuration.missing_activerecord_ids_handler
-            Configuration.missing_activerecord_ids_handler.call(@model, @missing_ids)
+            Configuration.missing_activerecord_ids_handler.call(@model.name, @missing_ids)
           end
         ensure
           return records_found
