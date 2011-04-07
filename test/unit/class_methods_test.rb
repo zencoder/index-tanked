@@ -104,7 +104,9 @@ module IndexTanked
           context "and the call was made to #add_to_index_tank with the third argument true or absent" do
             context "and a fallback method is configured it" do
               setup do
-                IndexTanked::Configuration.add_to_index_fallback = proc { |data| "class: #{data[:class].to_s.split('::').last}, doc_id: #{data[:doc_id]}, data: {#{data[:data][0].to_a.join(' => ')}}, error: #{data[:error].class}" }
+                IndexTanked::Configuration.add_to_index_fallback do |data|
+                  "class: #{data[:class].to_s.split('::').last}, doc_id: #{data[:doc_id]}, data: {#{data[:data][0].to_a.join(' => ')}}, error: #{data[:error].class}"
+                end
               end
 
               teardown do

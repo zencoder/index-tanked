@@ -2,9 +2,25 @@ module IndexTanked
   class Configuration
 
     class << self
-      attr_accessor :url, :index, :search_availability, :index_availability,
-                    :add_to_index_fallback, :delete_from_index_fallback, :timeout,
-                    :missing_activerecord_ids_handler
+      attr_accessor :url, :index, :search_availability, :index_availability, :timeout
+
+      def self.block_accessor(*fields)
+        fields.each do |field|
+          attr_writer field
+
+          eval("
+          def #{field}
+            if block_given?
+              @#{field} = Proc.new
+            else
+              @#{field}
+            end
+          end
+          ")
+        end
+      end
+
+      block_accessor :add_to_index_fallback, :delete_from_index_fallback, :missing_activerecord_ids_handler
 
       def search_available?
         if search_availability.is_a? Proc
