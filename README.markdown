@@ -40,8 +40,8 @@ These let you define how to handle if if something goes wrong when communicating
 
 Note that if you are adding your failures to a worker queue like Delayed Job that has it's own method for retrying failures it is important that you use the _without_fallback version of the method you are backgrounding so that each failures in the background queue don't result in new jobs being added to the queue.
 
-## add_to_index_fallback
+#### add_to_index_fallback
 The block or proc that is executed when an exception happens while attempting to add a record to IndexTank. The hash passed in contains the `:class`, `:data`, `:doc_id` and the `:error` that caused the original attempt to fail.
 
-## delete_to_index_fallback
+#### delete_to_index_fallback
 The block or proc that is executed when an exception happens while attempting to remove a record from to IndexTank. The hash passed in contains the `:class`, `:doc_id` and the `:error` that caused the original attempt to fail.
