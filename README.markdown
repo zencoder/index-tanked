@@ -13,6 +13,30 @@ If you're using Bundler toss a `gem 'index-tanked'` in your GEMFILE. Otherwise `
 Example
 -------
 
+    require 'rubygems'
+    require 'index-tanked'
+
+    class Dog
+      include IndexTanked
+
+      attr_accessor :breed, :flea_count, :name, :behavior_score, :description
+
+      index_tank :index => 'dogs', :url => 'http://example@indextank.com' do
+        doc_id, :doc_id
+        field :breed
+        field :behavior_score, :text => nil
+        field :fleas, :flea_count, :text => lambda { |dog| 'infested' if dog.flea_count > 5 }
+        field :name
+        var 0, 15
+        text :description
+      end
+
+      def doc_id
+        ...
+      end
+    end
+
+
 ActiveRecord Example
 --------------------
 
