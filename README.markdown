@@ -25,13 +25,13 @@ The index that will be used if you don't specify one when you define your index.
 #### search_availability
 Whether or not searching is enabled. This can be a boolean or a proc. This value can also be queried by calling `IndexTanked::Configuration.search_available?`. If a search is attempted while this is false a `SearchingDisabledError` will be raised.
 
-### index_availability
+#### index_availability
 Whether or not indexing is enabled. This can be a boolean or a proc. This value can also be queried by calling `IndexTanked::Configuration.index_available?`. If you attempt to add to or delete from the index while this is false an `IndexingDisabledError` will be raised and your index or delete fallback will be triggered if configured.
 
-### timeout
+#### timeout
 Timeout in seconds. If this is configured then when you attempt to add or delete from your index a `TimeoutExceededError` will be raised when the configured time has elapsed. This will trigger your add to index or delete fallback if configured.
 
-## Fallback methods
+### Fallback methods
 These let you define how to handle if if something goes wrong when communicating with IndexTank. For example if you fail to add a record to IndexTank due to a temporary network issue you may want to try again later in a background task. e.g.
 
     IndexTanked::Configuration.add_to_index_fallback do |information_from_failed_attempt|
