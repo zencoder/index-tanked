@@ -45,3 +45,6 @@ The block or proc that is executed when an exception happens while attempting to
 
 #### delete_to_index_fallback
 The block or proc that is executed when an exception happens while attempting to remove a record from to IndexTank. The hash passed in contains the `:class`, `:doc_id` and the `:error` that caused the original attempt to fail.
+
+#### missing_activerecord_ids_handler
+This block or proc lets you handle the situation where records that are no longer in your database have been returned in a search from IndexTank. You may, for example, take this opportunity to remove them from the index. The block is passed two arguments, the `model_name` and the `ids`.
