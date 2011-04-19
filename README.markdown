@@ -13,6 +13,7 @@ If you're using Bundler toss a `gem 'index-tanked'` in your GEMFILE. Otherwise `
 Configuration
 -------------
 You can optionally configure some things in the `IndexTanked::Configuration` class. e.g.
+
     IndexTanked::Configuration.index = 'your_index_name'
 
 #### url
