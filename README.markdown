@@ -58,16 +58,18 @@ The var method adds a variable. See the IndexTank documentation for why you migh
 ### What can we do now that we've done that?
 
 #### Instance methods
-*add_to_index_tank* Add your instance to your index on IndexTank.
+**add_to_index_tank** Add your instance to your index on IndexTank.
 
 #### Class Methods
-*add_to_index_tank(doc_id, data, fallback)* This method is called internally by the instance method, the third argument is optional and defaults to true, it determines whether or not your add_to_index_fallback will be called.
+**add_to_index_tank(doc_id, data, fallback)** This method is called internally by the instance method, the third argument is optional and defaults to true, it determines whether or not your add_to_index_fallback will be called.
 
-*add_to_index_tank_without_fallback(doc_id, data)* Calls the above, passing false to fallback.
+**add_to_index_tank_without_fallback(doc_id, data)** Calls the above, passing false to fallback.
 
-*delete_from_index_tank(doc_id, fallback)* Removes the document with the doc_id passed as it's first argument from the index. The second argument is optional and defaults to true, it determines whether or not your delete_from_index_fallback will be called.
+**delete_from_index_tank(doc_id, fallback)** Removes the document with the doc_id passed as it's first argument from the index. The second argument is optional and defaults to true, it determines whether or not your delete_from_index_fallback will be called.
 
-*delete_from_index_tank_without_fallback(doc_id)* Calls the above, passing false to fallback.
+**delete_from_index_tank_without_fallback(doc_id)** Calls the above, passing false to fallback.
+
+**search_index_tank(query, options)**
 
 ActiveRecord Example
 --------------------
