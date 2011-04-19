@@ -33,8 +33,9 @@ Timeout in seconds. If this is configured then when you attempt to add or delete
 
 ## Fallback methods
 These let you define how to handle if if something goes wrong when communicating with IndexTank. For example if you fail to add a record to IndexTank due to a temporary network issue you may want to try again later in a background task. e.g.
+
     IndexTanked::Configuration.add_to_index_fallback do |information_from_failed_attempt|
-      information_from_failed_attempt[:class].send_later.add_to_index_tank_without_fallback(information_from_failed_attempt[:doc_id], information_from_failed_attempt[:data])
+        information_from_failed_attempt[:class].send_later.add_to_index_tank_without_fallback(information_from_failed_attempt[:doc_id], information_from_failed_attempt[:data])
     end
 
 Note that if you are adding your failures to a worker queue like Delayed Job that has it's own method for retrying failures it is important that you use the _without_fallback version of the method you are backgrounding so that each failures in the background queue don't result in new jobs being added to the queue.
