@@ -10,6 +10,12 @@ Install
 
 If you're using Bundler toss a `gem 'index-tanked'` in your GEMFILE. Otherwise `gem install 'index-tanked'`
 
+Example
+-------
+
+ActiveRecord Example
+--------------------
+
 Configuration
 -------------
 You can optionally configure some things in the `IndexTanked::Configuration` class. e.g.
@@ -43,7 +49,7 @@ Note that if you are adding your failures to a worker queue like Delayed Job tha
 #### add_to_index_fallback
 The block or proc that is executed when an exception happens while attempting to add a record to IndexTank. The hash passed in contains the `:class`, `:data`, `:doc_id` and the `:error` that caused the original attempt to fail.
 
-#### delete_to_index_fallback
+#### delete_from_index_fallback
 The block or proc that is executed when an exception happens while attempting to remove a record from to IndexTank. The hash passed in contains the `:class`, `:doc_id` and the `:error` that caused the original attempt to fail.
 
 #### missing_activerecord_ids_handler
