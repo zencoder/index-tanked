@@ -39,11 +39,13 @@ Example
 
 ### What did we just do?
 
-First thing's first. Include IndexTanked in your class. Next up is the index_tank block where we determine what we're going to index. The first thing we define is the doc_id. The doc_id is the ID of your record in IndexTank and you need to be able to generate a unique one for each instance that you'll be indexing. If you're using ActiveRecord you can skip this as it's defined by default, if you're using anything else you'll need to come come up with your own. You could base it on the url that points to the document, or the id used by your data store, etc.
+First thing's first. Include IndexTanked in your class. Next up is the index_tank block where we determine what we're going to index. You can pass in the index name and url here, alternatively if you have added a url and index to the configuration you can leave it off here and the configured ones will be used.
+
+ The first thing we define is the doc_id. The doc_id is the ID of your record in IndexTank and you need to be able to generate a unique one for each instance that you'll be indexing. If you're using ActiveRecord you can skip this as it's defined by default, if you're using anything else you'll need to come come up with your own. You could base it on the url that points to the document, or the id used by your data store, etc.
 
 Next up are the fields. When you do a search in IndexTank you can specify which field you are searching like this: `breed:pug`. If you don't specify a field you end up searching a special field called text. By default when you add a field in IndexTanked the value of that field *also* goes into the text field.
 
-Sometimes you don't want that to occur, for instance, assuming that :behavior_score, above, is just a number, it may not make sense to have its value go into the text field since you may have multiple numerical fields and it may not make sense for a search of '5' to return dogs with 5 fleas and dogs with a behavior score of 5. If that is the case then `:text => nil` will prevent the fields value from being added to the text field.
+Sometimes you don't want that to occur, for instance, assuming that :behavior_score, above, is just a number, it may not make sense to have its value go into the text field since you may have multiple numerical fields and it may not make sense for a search of '5' to return dogs with 5 fleas and dogs with a behavior score of 5. If that is the case then `:text => nil` will prevent the field's value from being added to the text field.
 
 The field method takes three arguments. The first argument is what the field should be called in IndexTank. The second argument is the optional method to retrieve the value for the field. If it's not provided then it is assumed that the first argument is also the method to retrieve its value. This can be a symbol (the name of the method to call), a Proc which will be executed, or just a String / Integer etc which will then be indexed identically for all instances.
 
@@ -55,7 +57,17 @@ The var method adds a variable. See the IndexTank documentation for why you migh
 
 ### What can we do now that we've done that?
 
+#### Instance methods
+*add_to_index_tank* Add your instance to your index on IndexTank.
 
+#### Class Methods
+*add_to_index_tank(doc_id, data, fallback)* This method is called internally by the instance method, the third argument is optional and defaults to true, it determines whether or not your add_to_index_fallback will be called.
+
+*add_to_index_tank_without_fallback(doc_id, data)* Calls the above, passing false to fallback.
+
+*delete_from_index_tank(doc_id, fallback)* Removes the document with the doc_id passed as it's first argument from the index. The second argument is optional and defaults to true, it determines whether or not your delete_from_index_fallback will be called.
+
+*delete_from_index_tank_without_fallback(doc_id)* Calls the above, passing false to fallback.
 
 ActiveRecord Example
 --------------------
