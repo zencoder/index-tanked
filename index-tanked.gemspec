@@ -20,6 +20,6 @@ Gem::Specification.new do |s|
   s.add_development_dependency "webmock"
   s.add_development_dependency "activerecord", "~>3"
   s.add_development_dependency "sqlite3"
-  s.files        = Dir.glob("lib/**/*") + %w(LICENSE README.markdown Rakefile)
+  s.files        = Dir.glob("lib/**/*") + Dir.glob("generators/**/*") + %w(LICENSE README.markdown Rakefile)
   s.require_path = "lib"
 end
