@@ -2,7 +2,7 @@ module IndexTanked
   class Configuration
 
     class << self
-      attr_accessor :url, :index, :search_availability, :index_availability, :timeout
+      attr_accessor :url, :index, :search_availability, :index_availability, :timeout, :activerecord_queue
 
       def self.block_accessor(*fields)
         fields.each do |field|
