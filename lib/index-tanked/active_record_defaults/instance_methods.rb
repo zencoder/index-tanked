@@ -14,7 +14,7 @@ module IndexTanked
       def add_to_index_tank_after_save(fallback=true)
         if index_tanked.dependencies_changed?
           if Configuration.activerecord_queue
-            Document.enqueue(id, class.name, index_tanked.document_for_batch_addition)
+            Document.enqueue(id, self.class.name, index_tanked.document_for_batch_addition)
           else
             add_to_index_tank(fallback)
           end

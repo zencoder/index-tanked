@@ -23,21 +23,21 @@ module IndexTanked
         end
 
         def self.index_tanked(options)
-          @indexes ||= {}
-          @companions ||= {}
+          @index_list ||= {}
+          @companion_list ||= {}
           if options[:model_name]
             model_name = options[:model_name]
-            if @indexes[model_name]
-              @indexes[model_name]
+            if @index_list[model_name]
+              @index_list[model_name]
             else
               class_companion = model_name.constantize.index_tanked
               index = "#{class_companion.index_tank_url} - #{class_companion.index_name}"
-              @indexes[model_name] = index
-              @companions[index] ||= class_companion
+              @index_list[model_name] = index
+              @companion_list[index] ||= class_companion
             end
-            @indexes[model_name]
+            @index_list[model_name]
           elsif options[:index]
-            @companions[options[:index]]
+            @companion_list[options[:index]]
           end
         end
 
@@ -66,6 +66,7 @@ module IndexTanked
               destroy_all(:locked_by => identifier)
             rescue StandardError => e
               puts "something (#{e.class} - #{e.message}) got jacked, unlocking"
+              puts e.backtrace
               update_all(["locked_by = NULL, locked_at = NULL"],
                          ["locked_by = ?", identifier])
             end
