@@ -1,6 +1,6 @@
 module IndexTanked
   class ClassCompanion
-    attr_reader :fields, :variables, :texts, :index_name, :doc_id_value
+    attr_reader :fields, :variables, :texts, :index_name, :index_tank_url, :doc_id_value
 
     def initialize(options={})
       @fields         = []

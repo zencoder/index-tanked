@@ -17,14 +17,28 @@ module IndexTanked
           super.sub(/document: \"[^\"\r\n]*\"/, %{document: #{document.inspect}})
         end
 
-        def self.enqueue(document_hash)
-          docid = document_hash[:docid] || document_hash['docid']
-          destroy_all(:docid => docid)
-          create(:docid => docid, :document => document_hash)
+        def self.enqueue(record_id, model_name, document_hash)
+          destroy_all(:record_id => record_id, :model_name => model_name)
+          create(:record_id => record_id, :model_name => model_name, :document => document_hash)
         end
 
-        def self.index_tanked
-          @index_tanked ||= IndexTanked::ClassCompanion.new
+        def self.index_tanked(options)
+          @indexes ||= {}
+          @companions ||= {}
+          if options[:model_name]
+            model_name = options[:model_name]
+            if @indexes[model_name]
+              @indexes[model_name]
+            else
+              class_companion = model_name.constantize.index_tanked
+              index = "#{class_companion.index_tank_url} - #{class_companion.index_name}"
+              @indexes[model_name] = index
+              @companions[index] ||= class_companion
+            end
+            @indexes[model_name]
+          elsif options[:index]
+            @companions[options[:index]]
+          end
         end
 
         def self.work_off(batch_size, identifier)
@@ -34,10 +48,20 @@ module IndexTanked
           puts "#{locked} locked."
           if locked > 0
             puts "Getting documents"
-            documents = get_documents_by_identifier(identifier)
+            documents = find_all_by_locked_by(identifier)
             begin
-              puts "sending to indextanked"
-              index_tanked.index.batch_insert(documents)
+              puts "sending to indextank"
+              indexes = documents.inject({}) do |hash, doc|
+                index = index_tanked(:model_name => doc.model_name)
+                hash[index] ||= []
+                hash[index] << doc.document
+                hash
+              end
+
+              indexes.keys.each do |index|
+                index_tanked(:index => index).index.batch_insert(indexes[index])
+              end
+
               puts "destroying"
               destroy_all(:locked_by => identifier)
             rescue StandardError => e
@@ -48,11 +72,6 @@ module IndexTanked
           end
 
         end
-
-        def self.get_documents_by_identifier(identifier)
-          find_all_by_locked_by(identifier, :select => 'document').map(&:document)
-        end
-
       end
 
     end
