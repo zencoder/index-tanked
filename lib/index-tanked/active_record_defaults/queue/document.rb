@@ -22,47 +22,51 @@ module IndexTanked
           create(:record_id => record_id, :model_name => model_name, :document => document_hash)
         end
 
-        def self.index_tanked(options)
+        def self.get_or_update_index_information(model_name)
           @index_list ||= {}
           @companion_list ||= {}
-          if options[:model_name]
-            model_name = options[:model_name]
-            if @index_list[model_name]
-              @index_list[model_name]
-            else
-              class_companion = model_name.constantize.index_tanked
-              index = "#{class_companion.index_tank_url} - #{class_companion.index_name}"
-              @index_list[model_name] = index
-              @companion_list[index] ||= class_companion
-            end
+          if @index_list[model_name]
             @index_list[model_name]
-          elsif options[:index]
-            @companion_list[options[:index]]
+          else
+            class_companion = model_name.constantize.index_tanked
+            index = "#{class_companion.index_tank_url} - #{class_companion.index_name}"
+            @index_list[model_name] = index
+            @companion_list[index] ||= class_companion
+          end
+          @index_list[model_name]
+        end
+
+        def self.index_tanked(url_and_index_name)
+          @companion_list[url_and_index_name]
+        end
+
+        def self.lock_records_for_batch(batch_size, identifier)
+          update_all(["locked_by = ?, locked_at = clock_timestamp() at time zone 'UTC'", identifier],
+                     ["locked_by IS NULL"], :limit => batch_size)
+        end
+
+        def self.partition_documents_by_index_and_url(documents)
+          documents.inject({}) do |hash, doc|
+            index = get_or_update_index_information(doc.model_name)
+            hash[index] ||= []
+            hash[index] << doc.document
+            hash
+          end
+        end
+
+        def self.send_batches_to_index_tank(partitioned_documents)
+          partitioned_documents.keys.each do |url_and_index_name|
+            index_tanked(url_and_index_name).index.batch_insert(partitioned_documents[url_and_index_name])
           end
         end
 
         def self.work_off(batch_size, identifier)
-          puts "Locking"
-          locked = update_all(["locked_by = ?, locked_at = clock_timestamp() at time zone 'UTC'", identifier],
-                               ["locked_by IS NULL"], :limit => batch_size)
-          puts "#{locked} locked."
-          if locked > 0
-            puts "Getting documents"
+          number_locked = lock_records_for_batch(batch_size, identifier)
+          if number_locked > 0
             documents = find_all_by_locked_by(identifier)
             begin
-              puts "sending to indextank"
-              indexes = documents.inject({}) do |hash, doc|
-                index = index_tanked(:model_name => doc.model_name)
-                hash[index] ||= []
-                hash[index] << doc.document
-                hash
-              end
-
-              indexes.keys.each do |index|
-                index_tanked(:index => index).index.batch_insert(indexes[index])
-              end
-
-              puts "destroying"
+              partitioned_documents = partition_documents_by_index_and_url(documents)
+              send_batches_to_index_tank(partitioned_documents)
               destroy_all(:locked_by => identifier)
             rescue StandardError => e
               puts "something (#{e.class} - #{e.message}) got jacked, unlocking"
