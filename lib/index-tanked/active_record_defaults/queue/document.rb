@@ -75,9 +75,9 @@ module IndexTanked
           @model_list[options[:model_name]][:companion_key]
         end
 
-        def self.work_off(batch_size, identifier)
+        def self.process_documents(batch_size, identifier)
           number_locked = lock_records_for_batch(batch_size, identifier)
-          return if number_locked == 0
+          return number_locked if number_locked.zero?
           begin
             documents = find_all_by_locked_by(identifier)
             partitioned_documents = partition_documents_by_companion_key(documents)
