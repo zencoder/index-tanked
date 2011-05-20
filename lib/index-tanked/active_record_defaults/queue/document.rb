@@ -17,6 +17,16 @@ module IndexTanked
           super.sub(/document: \"[^\"\r\n]*\"/, %{document: #{document.inspect}})
         end
 
+        def self.clear_locks(identifier)
+          update_all(["locked_by = NULL, locked_at = NULL"],
+                     ["locked_by = ?", identifier])
+        end
+
+        def self.clear_expired_locks
+          update_all(["locked_at = NULL, locked_by = NULL"],
+                     ["age(clock_timestamp() at time zone 'UTC', locked_at) > interval '5 minutes'"])
+        end
+
         def self.enqueue(record_id, model_name, document_hash)
           destroy_all(:record_id => record_id, :model_name => model_name)
           create(:record_id => record_id, :model_name => model_name, :document => document_hash)
@@ -76,6 +86,7 @@ module IndexTanked
         end
 
         def self.process_documents(batch_size, identifier)
+          clear_expired_locks
           number_locked = lock_records_for_batch(batch_size, identifier)
           return number_locked if number_locked.zero?
           begin
@@ -86,8 +97,7 @@ module IndexTanked
           rescue StandardError, Timeout::Error => e
             handle_error(e)
           ensure
-            update_all(["locked_by = NULL, locked_at = NULL"],
-                       ["locked_by = ?", identifier])
+            clear_locks(identifier)
           end
         end
 

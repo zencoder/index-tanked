@@ -10,16 +10,33 @@ module IndexTanked
         end
 
         def start
+          log "Starting IndexTanked Queue"
+
+          trap('TERM') { say 'Exiting...'; $exit = true }
+          trap('INT')  { say 'Exiting...'; $exit = true }
+
           loop do
             count = Queue::Document.process_documents(@batch_size, @identifier)
+
+            break if $exit
+
             if count.zero?
               sleep(SLEEP)
             else
               puts "#{count} documents indexed"
             end
+
+            break if $exit
           end
+
+        ensure
+          Queue::Document.clear_locks(@identifier)
         end
-        
+
+        def log(message)
+          RAILS_DEFAULT_LOGGER.info("[#{@identifier}] - #{message}")
+        end
+
       end
     end
   end
