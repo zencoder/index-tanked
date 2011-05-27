@@ -17,14 +17,16 @@ module IndexTanked
           super.sub(/document: \"[^\"\r\n]*\"/, %{document: #{document.inspect}})
         end
 
-        def self.clear_locks(identifier)
-          update_all(["locked_by = NULL, locked_at = NULL"],
-                     ["locked_by = ?", identifier])
+        def self.clear_locks_by_identifier(identifier)
+          locks_cleared = update_all(["locked_by = NULL, locked_at = NULL"],
+                                     ["locked_by = ?", identifier])
+          locks_cleared
         end
 
         def self.clear_expired_locks
-          update_all(["locked_at = NULL, locked_by = NULL"],
-                     ["age(clock_timestamp() at time zone 'UTC', locked_at) > interval '5 minutes'"])
+          locks_cleared = update_all(["locked_at = NULL, locked_by = NULL"],
+                                     ["age(clock_timestamp() at time zone 'UTC', locked_at) > interval '5 minutes'"])
+          locks_cleared
         end
 
         def self.enqueue(record_id, model_name, document_hash)
@@ -42,8 +44,8 @@ module IndexTanked
             url = class_companion.index_tank_url
             index_name = class_companion.index_name
             companion_key = update_model_list(:model_name => model_name,
-                                    :url => url,
-                                    :index_name => name)
+                                              :url => url,
+                                              :index_name => index_name)
             update_index_list(companion_key, class_companion)
 
           end
@@ -68,12 +70,6 @@ module IndexTanked
           end
         end
 
-        def self.send_batches_to_index_tank(partitioned_documents)
-          partitioned_documents.keys.each do |companion_key|
-            index_tanked(companion_key).index.batch_insert(partitioned_documents[companion_key])
-          end
-        end
-
         def self.update_index_list(companion_key, class_companion)
           @index_list[companion_key] = class_companion unless @index_list[companion_key].present?
         end
@@ -83,27 +79,6 @@ module IndexTanked
                                                 :index_name => options[:index_name],
                                                 :companion_key => "#{options[:url]} - #{options[:index_name]}" }
           @model_list[options[:model_name]][:companion_key]
-        end
-
-        def self.process_documents(batch_size, identifier)
-          clear_expired_locks
-          number_locked = lock_records_for_batch(batch_size, identifier)
-          return number_locked if number_locked.zero?
-          begin
-            documents = find_all_by_locked_by(identifier)
-            partitioned_documents = partition_documents_by_companion_key(documents)
-            send_batches_to_index_tank(partitioned_documents)
-            delete_all(:locked_by => identifier)
-          rescue StandardError, Timeout::Error => e
-            handle_error(e)
-          ensure
-            clear_locks(identifier)
-          end
-        end
-
-        def self.handle_error(e)
-          puts "something (#{e.class} - #{e.message}) got jacked, unlocking"
-          puts e.backtrace
         end
 
       end
