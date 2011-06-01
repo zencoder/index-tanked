@@ -65,7 +65,10 @@ module IndexTanked
           documents.inject({}) do |partitioned_documents, document_record|
             companion_key = get_or_update_index_information(document_record.model_name)[:companion_key]
             partitioned_documents[companion_key] ||= []
-            partitioned_documents[companion_key] << document_record.document
+            #document may be a hash or an array of hashes due for single table inheritence ancestors
+            [document_record.document].flatten.each do |document_to_index|
+              partitioned_documents[companion_key] << document_to_index
+            end
             partitioned_documents
           end
         end
