@@ -14,6 +14,7 @@ module IndexTanked
 
           trap('TERM') { log 'Exiting...'; $exit = true }
           trap('INT')  { log 'Exiting...'; $exit = true }
+          trap('QUIT') { log 'Exiting...'; $exit = true }
 
           loop do
             count = process_documents(@batch_size)
@@ -21,7 +22,7 @@ module IndexTanked
             break if $exit
 
             if count.zero?
-              sleep(SLEEP)
+              (SLEEP * 2).times{ sleep(0.5) unless $exit }
             end
 
             break if $exit
