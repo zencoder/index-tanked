@@ -44,7 +44,7 @@ module IndexTanked
           rescue StandardError, Timeout::Error => e
             handle_error(e)
             locks_cleared = Queue::Document.clear_locks_by_identifier(@identifier)
-            log("#{locks_cleard} locks cleared")
+            log("#{locks_cleared} locks cleared")
             0 # return 0 so it sleeps
           end
         end
