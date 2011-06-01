@@ -54,7 +54,17 @@ module IndexTanked
             index_name = companion_key.split(' - ').last
             record_count = partitioned_documents[companion_key].size
             log("#{record_count} document(s) prepared for #{index_name}.")
-            Queue::Document.index_tanked(companion_key).index.batch_insert(partitioned_documents[companion_key])
+            begin
+              this_batch = partitioned_documents[companion_key]
+              Queue::Document.index_tanked(companion_key).index.batch_insert(this_batch)
+            rescue IndexTank::InvalidArgument => e
+              bad_document_number = e.message.scan(/in document #(\d+) of \d+/).flatten.first
+              bad_document_number = bad_document_number && (bad_document_number.to_i - 1)
+              if bad_document_number
+                log "Bad Document: #{this_batch[bad_document_number]}"
+              end
+              raise
+            end
           end
         end
 
