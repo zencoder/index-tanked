@@ -17,7 +17,12 @@ module IndexTanked
           trap('QUIT') { log 'Exiting...'; $exit = true }
 
           loop do
-            count = process_documents(@batch_size)
+            if IndexTanked::Configuration.index_available?
+              count = process_documents(@batch_size)
+            else
+              count = 0
+              log('Indexing is currently disabled, sleeping.')
+            end
 
             break if $exit
 
