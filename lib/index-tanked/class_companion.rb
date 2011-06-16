@@ -51,7 +51,7 @@ module IndexTanked
     end
 
     def add_fields_to_query(query, options={})
-      return nil if query.blank? && options[:fields].blank?
+      return nil if query.blank?
       [query, options[:fields] && options[:fields].to_a.map {|pair| pair.join(':')}.join(' ')].compact.join(" ").strip
     end
 
