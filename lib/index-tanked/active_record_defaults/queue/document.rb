@@ -30,7 +30,7 @@ module IndexTanked
         end
 
         def self.enqueue(record_id, model_name, document_hash)
-          destroy_all(:record_id => record_id, :model_name => model_name)
+          delete_all(:record_id => record_id, :model_name => model_name)
           create(:record_id => record_id, :model_name => model_name, :document => document_hash)
         end
 
