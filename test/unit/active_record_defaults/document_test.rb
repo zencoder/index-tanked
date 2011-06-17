@@ -82,7 +82,42 @@ module IndexTanked
             end
           end
         end
-        
+
+        context "#newest_record_with_this_docid?" do
+          context "A document with a unique model_name / record_id combination" do
+            setup do
+              @hash = {:docid => 'Person:1', :fields => {:one => '2'}}
+              @document = Document.enqueue(1, 'Person', @hash)
+            end
+
+            should "be the newest record with that combination" do
+              assert_equal true, @document.newest_record_with_this_docid?
+            end
+          end
+
+          context "Two document with the same model_name / record_id combination" do
+            setup do
+              @hash1 = {:docid => 'Person:1', :fields => {:one => '2'}}
+              @first_document = Document.enqueue(1, 'Person', @hash1)
+
+              @hash2 = {:docid => 'Person:1', :fields => {:one => '5'}}
+              @second_document = Document.enqueue(1, 'Person', @hash2)
+            end
+
+            context "the first document created" do
+              should "not be the newest document with it's model / record_id combination" do
+                assert_equal false, @first_document.newest_record_with_this_docid?
+              end
+            end
+
+            context "the second document created" do
+              should "be the newest record with that combination" do
+                assert_equal true, @second_document.newest_record_with_this_docid?
+              end
+            end
+          end
+        end
+
       end
     end
   end
