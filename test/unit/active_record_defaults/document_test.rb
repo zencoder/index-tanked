@@ -38,12 +38,31 @@ module IndexTanked
               assert_equal 1, Document.count
             end
 
-            should "replace that document" do
-              assert_equal Document.count, 1
-              @hash = {:docid => 'Person:1', :fields => {:one => '2'}}
-              @new_document = Document.enqueue(1, 'Person', @hash)
-              assert_equal Document.count, 1
-              assert_equal Document.first, @new_document
+            context "that is not locked" do
+              should "replace that document" do
+                assert_equal Document.count, 1
+                @hash = {:docid => 'Person:1', :fields => {:one => '2'}}
+                @new_document = Document.enqueue(1, 'Person', @hash)
+                assert_equal Document.count, 1
+                assert_equal Document.first, @new_document
+              end
+            end
+
+            context "that is locked" do
+              setup do
+                @document.locked_at = Time.now
+                @document.locked_by = 'locked-for-enqueue-test'
+                @document.save
+              end
+
+              should "not replace that document" do
+                assert_equal Document.count, 1
+                @hash = {:docid => 'Person:1', :fields => {:one => '2'}}
+                @new_document = Document.enqueue(1, 'Person', @hash)
+                assert_equal Document.count, 2
+                assert_equal Document.first, @document
+                assert_equal Document.last, @new_document
+              end
             end
 
           end
