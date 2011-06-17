@@ -69,9 +69,21 @@ module IndexTanked
 
         end
 
+        context "#inspect" do
+          context "A document with a hash serialized in it's document field" do
+            setup do
+              @hash = {:docid => 'Person:1', :fields => {:one => '2'}}
+              @document = Document.enqueue(1, 'Person', @hash)
+            end
+
+            should "show the inspected hash when inspected, not the marshaled hash" do
+              assert @document.inspect.include? @hash.inspect
+              assert !@document.inspect.include?(@document.read_attribute(:document))
+            end
+          end
+        end
+        
       end
-
-
     end
   end
 end
