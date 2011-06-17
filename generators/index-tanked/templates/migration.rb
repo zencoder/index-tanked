@@ -12,7 +12,7 @@ class CreateIndexTankedDocuments < ActiveRecord::Migration
     add_index :index_tanked_documents, :locked_at
     add_index :index_tanked_documents, :locked_by
     add_index :index_tanked_documents, [:model_name, :record_id]
-    add_index :index_tanked_documents, [:model_name, :record_id, :locked_by], :name => 'docid_by_identifier'
+    add_index :index_tanked_documents, [:model_name, :record_id, :locked_by], :name => 'index_index_tanked_documents_docid_by_identifier'
 
   end
 
@@ -20,7 +20,7 @@ class CreateIndexTankedDocuments < ActiveRecord::Migration
     remove_index :index_tanked_documents, :locked_at
     remove_index :index_tanked_documents, :locked_by
     remove_index :index_tanked_documents, [:model_name, :record_id]
-    remove_index :index_tanked_documents, :name => 'docid_by_identifier'
+    remove_index :index_tanked_documents, :name => 'index_index_tanked_documents_docid_by_identifier'
 
     drop_table :index_tanked_documents
   end
