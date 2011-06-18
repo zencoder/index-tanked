@@ -14,7 +14,12 @@ module IndexTanked
         end
 
         def inspect
+          return super if read_attribute(:document).nil?
           super.sub(/document: \"[^\"\r\n]*\"/, %{document: #{document.inspect}})
+        end
+
+        def newest_record_with_this_docid?
+          self.class.find_by_model_name_and_record_id(self.model_name, self.record_id, :order => 'created_at DESC', :limit => 1) == self
         end
 
         def self.clear_locks_by_identifier(identifier)
@@ -29,8 +34,28 @@ module IndexTanked
           locks_cleared
         end
 
+        def self.delete_outdated_locked_records_by_identifier(identifier)
+          ids_to_delete = non_unique_docids_by_identifier(identifier).inject([]) do |ids, (model_name, record_id)|
+            record = find_by_model_name_and_record_id_and_locked_by(model_name, record_id, identifier)
+            ids << record.id unless record.newest_record_with_this_docid?
+            ids
+          end
+
+          if ids_to_delete.any?
+            delete_all(['id in (?)', ids_to_delete])
+          else
+            0
+          end
+        end
+
+        def self.non_unique_docids_by_identifier(identifier)
+          find_by_sql(['SELECT model_name, record_id FROM index_tanked_documents GROUP BY model_name, record_id HAVING count(*) > 1 INTERSECT SELECT model_name, record_id FROM index_tanked_documents WHERE locked_by = ?', identifier]).map do |partial_record|
+            [partial_record.model_name, partial_record.record_id]
+          end
+        end
+
         def self.enqueue(record_id, model_name, document_hash)
-          delete_all(:record_id => record_id, :model_name => model_name)
+          delete_all(:record_id => record_id, :model_name => model_name, :locked_by => nil)
           create(:record_id => record_id, :model_name => model_name, :document => document_hash)
         end
 

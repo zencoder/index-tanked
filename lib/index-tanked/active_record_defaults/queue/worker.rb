@@ -48,7 +48,9 @@ module IndexTanked
             documents_deleted
           rescue StandardError, Timeout::Error => e
             handle_error(e)
+            outdated_locked_records_deleted = Queue::Document.delete_outdated_locked_records_by_identifier(@identifier)
             locks_cleared = Queue::Document.clear_locks_by_identifier(@identifier)
+            log("#{outdated_locked_records_deleted} outdated locks deleted")
             log("#{locks_cleared} locks cleared")
             0 # return 0 so it sleeps
           end
