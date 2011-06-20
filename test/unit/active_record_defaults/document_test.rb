@@ -29,6 +29,26 @@ module IndexTanked
             assert_equal @hash, @document.document
           end
 
+          context "when a deadlock occurs while deleting duplicate record_id / model_names" do
+            should "retry up to three times" do
+              Document.expects(:delete_all).with({:record_id => 1, :model_name => 'Blah', :locked_by => nil}).times(4).raises(ActiveRecord::StatementInvalid.new("oh snap, deadlock detected"))
+              Document.enqueue(1, 'Blah', {})
+            end
+
+            should "only retry once if the retry succeeds" do
+              Document.expects(:delete_all).with({:record_id => 1, :model_name => 'Blah', :locked_by => nil}).times(2).raises(ActiveRecord::StatementInvalid.new("oh snap, deadlock detected")).then.returns(1)
+              Document.enqueue(1, 'Blah', {})
+            end
+
+          end
+
+          context "when a non deadlock statement error occurs" do
+            should "not retry" do
+              Document.expects(:delete_all).with({:record_id => 1, :model_name => 'Blah', :locked_by => nil}).raises(ActiveRecord::StatementInvalid.new("your statement, it is invalid"))
+              Document.enqueue(1, 'Blah', {})
+            end
+          end
+
           context "when a document with the id to be added already exits" do
             setup do
               @document = Document.create({:record_id => 1, :model_name => 'Person', :document => {:docid => 'Person:1', :fields => {:one => '1'}}})
