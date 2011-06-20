@@ -54,19 +54,6 @@ module IndexTanked
           end
         end
 
-        def self.enqueue(record_id, model_name, document_hash)
-          retries = 0
-          begin
-            delete_all(:record_id => record_id, :model_name => model_name, :locked_by => nil)
-          rescue ActiveRecord::StatementInvalid => e
-            if e.message.match(/deadlock/) && retries < 3
-              retries += 1
-              retry
-            end
-          end
-          create(:record_id => record_id, :model_name => model_name, :document => document_hash)
-        end
-
         def self.get_or_update_index_information(model_name)
           @model_list ||= {}
           @index_list ||= {}

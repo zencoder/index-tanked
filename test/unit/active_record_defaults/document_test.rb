@@ -18,82 +18,11 @@ module IndexTanked
           end
         end
 
-        context "#enqueue" do
-          should "add a document to the table" do
-            assert_equal Document.count, 0
-            @hash = {:docid => 'Person:1', :fields => {:one => '1'}}
-            @document = Document.enqueue(1, 'Person', @hash)
-            assert_equal Document.count, 1
-            assert_equal 1, @document.record_id
-            assert_equal 'Person', @document.model_name
-            assert_equal @hash, @document.document
-          end
-
-          context "when a deadlock occurs while deleting duplicate record_id / model_names" do
-            should "retry up to three times" do
-              Document.expects(:delete_all).with({:record_id => 1, :model_name => 'Blah', :locked_by => nil}).times(4).raises(ActiveRecord::StatementInvalid.new("oh snap, deadlock detected"))
-              Document.enqueue(1, 'Blah', {})
-            end
-
-            should "only retry once if the retry succeeds" do
-              Document.expects(:delete_all).with({:record_id => 1, :model_name => 'Blah', :locked_by => nil}).times(2).raises(ActiveRecord::StatementInvalid.new("oh snap, deadlock detected")).then.returns(1)
-              Document.enqueue(1, 'Blah', {})
-            end
-
-          end
-
-          context "when a non deadlock statement error occurs" do
-            should "not retry" do
-              Document.expects(:delete_all).with({:record_id => 1, :model_name => 'Blah', :locked_by => nil}).raises(ActiveRecord::StatementInvalid.new("your statement, it is invalid"))
-              Document.enqueue(1, 'Blah', {})
-            end
-          end
-
-          context "when a document with the id to be added already exits" do
-            setup do
-              @document = Document.create({:record_id => 1, :model_name => 'Person', :document => {:docid => 'Person:1', :fields => {:one => '1'}}})
-            end
-
-            should "have one document" do
-              assert_equal 1, Document.count
-            end
-
-            context "that is not locked" do
-              should "replace that document" do
-                assert_equal Document.count, 1
-                @hash = {:docid => 'Person:1', :fields => {:one => '2'}}
-                @new_document = Document.enqueue(1, 'Person', @hash)
-                assert_equal Document.count, 1
-                assert_equal Document.first, @new_document
-              end
-            end
-
-            context "that is locked" do
-              setup do
-                @document.locked_at = Time.now
-                @document.locked_by = 'locked-for-enqueue-test'
-                @document.save
-              end
-
-              should "not replace that document" do
-                assert_equal Document.count, 1
-                @hash = {:docid => 'Person:1', :fields => {:one => '2'}}
-                @new_document = Document.enqueue(1, 'Person', @hash)
-                assert_equal Document.count, 2
-                assert_equal Document.first, @document
-                assert_equal Document.last, @new_document
-              end
-            end
-
-          end
-
-        end
-
         context "#inspect" do
           context "A document with a hash serialized in it's document field" do
             setup do
               @hash = {:docid => 'Person:1', :fields => {:one => '2'}}
-              @document = Document.enqueue(1, 'Person', @hash)
+              @document = Document.create(:record_id => 1, :model_name => 'Person', :document => @hash)
             end
 
             should "show the inspected hash when inspected, not the marshaled hash" do
@@ -107,7 +36,7 @@ module IndexTanked
           context "A document with a unique model_name / record_id combination" do
             setup do
               @hash = {:docid => 'Person:1', :fields => {:one => '2'}}
-              @document = Document.enqueue(1, 'Person', @hash)
+              @document = Document.create(:record_id => 1, :model_name => 'Person', :document => @hash)
             end
 
             should "be the newest record with that combination" do
@@ -118,10 +47,10 @@ module IndexTanked
           context "Two document with the same model_name / record_id combination" do
             setup do
               @hash1 = {:docid => 'Person:1', :fields => {:one => '2'}}
-              @first_document = Document.enqueue(1, 'Person', @hash1)
+              @first_document = Document.create(:record_id => 1, :model_name => 'Person', :document => @hash1)
 
               @hash2 = {:docid => 'Person:1', :fields => {:one => '5'}}
-              @second_document = Document.enqueue(1, 'Person', @hash2)
+              @second_document = Document.create(:record_id => 1, :model_name => 'Person', :document => @hash2)
             end
 
             context "the first document created" do
@@ -141,13 +70,13 @@ module IndexTanked
         context "Three locked records" do
           context "one with an unlocked model_name / record_id twin that is newer than itself" do
             setup do
-              @locked_person_old = Document.enqueue(1, 'Person', {})
+              @locked_person_old = Document.create(:record_id => 1, :model_name => 'Person', :document => {})
               @locked_person_old.update_attributes(:locked_by => 'testing', :locked_at => Time.now)
-              @unlocked_person_new = Document.enqueue(1, 'Person', {})
+              @unlocked_person_new = Document.create(:record_id => 1, :model_name => 'Person', :document => {})
             end
             context "one with an unlocked model_name / record_id twin that is older than itself" do
               setup do
-                @unlocked_robot_old = Document.enqueue(6, 'Robot', {})
+                @unlocked_robot_old = Document.create(:record_id => 6, :model_name => 'Robot', :document => {})
                 @locked_robot_new = Document.create(:record_id => 6,
                                                     :model_name =>  'Robot',
                                                     :document => {},
@@ -156,7 +85,7 @@ module IndexTanked
               end
               context "and one that is unique" do
                 setup do
-                  @beautiful_snowflake = Document.enqueue(3, 'Snowflake', {})
+                  @beautiful_snowflake = Document.create(:record_id => 3, :model_name => 'Snowflake', :document => {})
                   @beautiful_snowflake.update_attributes(:locked_by => 'testing', :locked_at => Time.now)
                 end
 
