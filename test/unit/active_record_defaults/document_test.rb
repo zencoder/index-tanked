@@ -56,7 +56,7 @@ module IndexTanked
               assert_equal nil, Document.index_of_duplicate_document(@documents, Document.create(:model_name => "User", :record_id => 8))
             end
 
-            should "remove duplicate's, keeping the newest" do
+            should "remove duplicates, keeping the newest" do
               @duplicate = @documents[3]
               assert_same_elements @documents - [@duplicate],
                                    Document.remove_duplicate_documents(@documents)

@@ -96,8 +96,10 @@ module IndexTanked
         def self.remove_duplicate_documents(documents)
           documents.inject([]) do |documents, document_record|
             duplicate_index = index_of_duplicate_document(documents, document_record)
-            if duplicate_index && (documents[duplicate_index].created_at < document_record.created_at)
-              documents[duplicate_index] = document_record
+            if duplicate_index
+              if documents[duplicate_index].created_at < document_record.created_at
+                documents[duplicate_index] = document_record
+              end
             else
               documents << document_record
             end
