@@ -94,12 +94,12 @@ module IndexTanked
         end
 
         def self.remove_duplicate_documents(documents)
-          documents.inject([]) do |documents, document|
-            duplicate_index = index_of_duplicate_document(documents, document)
-            if duplicate_index && (documents[duplicate_index][:fields][:timestamp] < document[:fields][:timestamp])
-              documents[duplicate_index] = document
+          documents.inject([]) do |documents, document_record|
+            duplicate_index = index_of_duplicate_document(documents, document_record)
+            if duplicate_index && (documents[duplicate_index].created_at < document_record.created_at)
+              documents[duplicate_index] = document_record
             else
-              documents << document
+              documents << document_record
             end
             documents
           end
@@ -107,7 +107,7 @@ module IndexTanked
 
         def self.index_of_duplicate_document(document_array, document_to_index)
           document_array.index do |doc|
-            doc[:docid] == document_to_index[:docid]
+            (doc.record_id == document_to_index.record_id) && (doc.model_name == document_to_index.model_name)
           end
         end
 
