@@ -32,6 +32,44 @@ module IndexTanked
           end
         end
 
+        context "duplicate document removal" do
+          context "An array of documents for batch insertion" do
+            setup do
+              @documents = [{:fields=>{:timestamp=>1}, :docid=>"User:1"},
+                            {:fields=>{:timestamp=>2}, :docid=>"User:2"},
+                            {:fields=>{:timestamp=>3}, :docid=>"User:3"},
+                            {:fields=>{:timestamp=>4}, :docid=>"User:4"},
+                            {:fields=>{:timestamp=>5}, :docid=>"User:5"},
+                            {:fields=>{:timestamp=>6}, :docid=>"User:4"},
+                            {:fields=>{:timestamp=>7}, :docid=>"User:6"}]
+            end
+
+            should "return the index of a duplicate document" do
+              assert_equal 1, Document.index_of_duplicate_document(@documents, {
+                :fields=>{:timestamp=>8}, :docid=>"User:2"
+              })
+            end
+
+            should "return nil if there is no duplicate document" do
+              assert_equal nil, Document.index_of_duplicate_document(@documents, {
+                :fields=>{:timestamp=>9}, :docid=>"User:7"
+              })
+            end
+
+            should "remove duplicate's, keeping the newest" do
+              assert_same_elements [{:fields=>{:timestamp=>1}, :docid=>"User:1"},
+                                    {:fields=>{:timestamp=>2}, :docid=>"User:2"},
+                                    {:fields=>{:timestamp=>3}, :docid=>"User:3"},
+                                    {:fields=>{:timestamp=>5}, :docid=>"User:5"},
+                                    {:fields=>{:timestamp=>6}, :docid=>"User:4"},
+                                    {:fields=>{:timestamp=>7}, :docid=>"User:6"}],
+                                    Document.remove_duplicate_documents(@documents)
+            end
+
+          end
+        end
+
+
         context "#newest_record_with_this_docid?" do
           context "A document with a unique model_name / record_id combination" do
             setup do

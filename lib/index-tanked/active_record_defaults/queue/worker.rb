@@ -41,7 +41,8 @@ module IndexTanked
           return number_locked if number_locked.zero?
           begin
             documents = Queue::Document.find_all_by_locked_by(@identifier)
-            partitioned_documents = Queue::Document.partition_documents_by_companion_key(documents)
+            documents_without_duplicate_docids = Queue::Document.remove_duplicate_documents(documents)
+            partitioned_documents = Queue::Document.partition_documents_by_companion_key(documents_without_duplicate_docids)
             send_batches_to_indextank(partitioned_documents)
             documents_deleted = Queue::Document.delete_all(:locked_by => @identifier)
             log("#{documents_deleted} completed documents removed from queue.")

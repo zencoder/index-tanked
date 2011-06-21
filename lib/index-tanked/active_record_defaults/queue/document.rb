@@ -93,6 +93,24 @@ module IndexTanked
           end
         end
 
+        def self.remove_duplicate_documents(documents)
+          documents.inject([]) do |documents, document|
+            duplicate_index = index_of_duplicate_document(documents, document)
+            if duplicate_index && (documents[duplicate_index][:fields][:timestamp] < document[:fields][:timestamp])
+              documents[duplicate_index] = document
+            else
+              documents << document
+            end
+            documents
+          end
+        end
+
+        def self.index_of_duplicate_document(document_array, document_to_index)
+          document_array.index do |doc|
+            doc[:docid] == document_to_index[:docid]
+          end
+        end
+
         def self.update_index_list(companion_key, class_companion)
           @index_list[companion_key] = class_companion unless @index_list[companion_key].present?
         end
