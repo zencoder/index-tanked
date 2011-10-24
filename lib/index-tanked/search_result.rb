@@ -48,7 +48,19 @@ module IndexTanked
           raise SearchingDisabledError, "index tank search is disabled in configuration" unless IndexTanked::Configuration.search_available?
           raise IndexTanked::SearchError, "No or invalid index has been provided" unless @index.is_a? IndexTank::Index
           raise IndexTanked::SearchError, "No query provided" if @query.nil?
-          @raw_result ||= @index.search(@query, @options.merge(:start => pager.offset, :len => pager.per_page))
+          search_timeout = if IndexTanked::Configuration.search_timeout.is_a?(Proc)
+            IndexTanked::Configuration.search_timeout.call
+          else
+            IndexTanked::Configuration.search_timeout
+          end
+          if search_timeout
+            IndexTanked::Timer.timeout(search_timeout, TimeoutExceededError) do
+              sleep(search_timeout + 1) if $testing_index_tanked_search_timeout
+              @raw_result ||= @index.search(@query, @options.merge(:start => pager.offset, :len => pager.per_page))
+            end
+          else
+            @raw_result ||= @index.search(@query, @options.merge(:start => pager.offset, :len => pager.per_page))
+          end
         rescue StandardError => e
           raise if e.is_a? IndexTankedError
           raise IndexTanked::SearchError, "#{e.class}: #{e.message}"

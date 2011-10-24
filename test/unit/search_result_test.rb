@@ -62,6 +62,32 @@ module IndexTanked
         end
       end
 
+      context "when a search timeout is set" do
+        setup do
+          IndexTanked::Configuration.search_timeout = 0.2
+        end
+
+        teardown do
+          IndexTanked::Configuration.search_timeout = nil
+        end
+
+        context "and the request takes too long" do
+          setup do
+            $testing_index_tanked_search_timeout = true
+          end
+
+          teardown do
+            $testing_index_tanked_search_timeout = nil
+          end
+
+          should "raise an exception" do
+            assert_raises TimeoutExceededError do
+              @search_result.raw_result
+            end
+          end
+        end
+      end
+
       context "whose search has successfully executed" do
         setup do
           @search_result.instance_exec do
