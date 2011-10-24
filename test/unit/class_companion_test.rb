@@ -237,7 +237,7 @@ module IndexTanked
 
       context "#add_fields_to_query" do
         should "add fields to the query provided" do
-          assert_equal "name:adam email:adam@zencoder.com date:today", @companion.add_fields_to_query("name:adam", :fields => {:email => "adam@zencoder.com", :date => 'today'})
+          assert_same_elements "name:adam email:adam@zencoder.com date:today".split(' '), @companion.add_fields_to_query("name:adam", :fields => {:email => "adam@zencoder.com", :date => 'today'}).split(' ')
         end
 
         should "not construct the query from fields if no query was provided " do
