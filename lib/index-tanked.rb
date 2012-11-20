@@ -10,6 +10,7 @@ end
 
 require 'indextank'
 require 'will_paginate/collection'
+require 'active_record'
 
 require 'index-tanked/index_tanked'
 require 'index-tanked/class_companion'

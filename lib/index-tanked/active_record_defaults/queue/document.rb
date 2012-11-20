@@ -3,7 +3,7 @@ module IndexTanked
     module Queue
 
       class Document < ActiveRecord::Base
-        set_table_name 'index_tanked_documents'
+        self.table_name = 'index_tanked_documents'
 
         def document
           Marshal.load(Base64.decode64(read_attribute(:document)))
