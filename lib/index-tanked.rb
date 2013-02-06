@@ -8,7 +8,7 @@ module IndexTanked
   end
 end
 
-require 'indextank'
+require 'index-tanked/indextank/indextank'
 require 'will_paginate/collection'
 
 require 'index-tanked/index_tanked'

@@ -70,7 +70,7 @@ module IndexTanked
 
           context "when an exception is raised" do
             setup do
-              IndexTank::Document.any_instance.expects(:add).raises(StandardError)
+              IndexTanked::IndexTank::Document.any_instance.expects(:add).raises(StandardError)
             end
 
             context "and the call was made to #add_to_index_tank with the third argument true or absent" do
@@ -173,7 +173,7 @@ module IndexTanked
 
           context "when an exception is raised" do
             setup do
-              IndexTank::Document.any_instance.expects(:delete).raises(StandardError)
+              IndexTanked::IndexTank::Document.any_instance.expects(:delete).raises(StandardError)
             end
 
             context "and the call was made to #delete_from_index_tank with the third argument true or absent" do

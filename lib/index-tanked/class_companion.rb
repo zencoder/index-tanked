@@ -36,7 +36,7 @@ module IndexTanked
 
     def api_client
       return nil if @index_tank_url.nil?
-      @api_client ||= (IndexTank::Client.new @index_tank_url)
+      @api_client ||= (IndexTanked::IndexTank::Client.new @index_tank_url)
     end
 
     def get_value_from(instance, method)

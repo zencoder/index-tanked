@@ -16,6 +16,4 @@ require 'person'
 require 'programmer'
 
 class Test::Unit::TestCase
-  include WebMock
-
 end

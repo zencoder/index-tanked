@@ -65,7 +65,7 @@ module IndexTanked
             begin
               this_batch = partitioned_documents[companion_key]
               Queue::Document.index_tanked(companion_key).index.batch_insert(this_batch)
-            rescue IndexTank::InvalidArgument => e
+            rescue IndexTanked::IndexTank::InvalidArgument => e
               bad_document_number = e.message.scan(/in document #(\d+) of \d+/).flatten.first
               bad_document_number = bad_document_number && (bad_document_number.to_i - 1)
               if bad_document_number

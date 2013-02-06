@@ -133,7 +133,7 @@ module IndexTanked
                   exception = assert_raises ActiveRecord::RecordNotFound do
                     @locked_person_old.reload
                   end
-                  assert_equal "Couldn't find IndexTanked::ActiveRecordDefaults::Queue::Document with ID=#{person_old_id}", exception.message
+                  assert_equal "Couldn't find IndexTanked::ActiveRecordDefaults::Queue::Document with id=#{person_old_id}", exception.message
                 end
 
               end

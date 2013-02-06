@@ -63,11 +63,11 @@ module IndexTanked
         end
 
         should "access its classes' index" do
-          assert @companion.index.is_a? IndexTank::Index
+          assert @companion.index.is_a? IndexTanked::IndexTank::Index
         end
 
-        should "return an IndexTank::Client" do
-          assert @companion.api_client.is_a? IndexTank::Client
+        should "return an IndexTanked::IndexTank::Client" do
+          assert @companion.api_client.is_a? IndexTanked::IndexTank::Client
         end
       end
     end

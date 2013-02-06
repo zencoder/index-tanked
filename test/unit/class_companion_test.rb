@@ -201,8 +201,8 @@ module IndexTanked
           @index = @companion.index
         end
 
-        should "return an IndexTank::Index" do
-          assert @index.is_a? IndexTank::Index
+        should "return an IndexTanked::IndexTank::Index" do
+          assert @index.is_a? IndexTanked::IndexTank::Index
         end
       end
 
@@ -211,8 +211,8 @@ module IndexTanked
           @client = @companion.api_client
         end
 
-        should "return an IndexTank::Client" do
-          assert @client.is_a? IndexTank::Client
+        should "return an IndexTanked::IndexTank::Client" do
+          assert @client.is_a? IndexTanked::IndexTank::Client
         end
       end
 

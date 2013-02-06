@@ -9,7 +9,7 @@ module IndexTanked
           Person.reset!
           (1..5).each { |n| Person.create! :name => "blah#{n}" }
           IndexTanked::Configuration.search_availability = true
-          @search_result = SearchResult.new('bacon', IndexTank::Index.new('list_o_bacon'), Person, :page => 1, :per_page => 5)
+          @search_result = SearchResult.new('bacon', IndexTanked::IndexTank::Index.new('list_o_bacon'), Person, :page => 1, :per_page => 5)
         end
 
         teardown do

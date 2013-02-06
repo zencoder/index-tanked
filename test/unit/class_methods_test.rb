@@ -87,7 +87,7 @@ module IndexTanked
             end
 
             should "not raise an exception if fallback is false" do
-              IndexTank::Document.any_instance.expects(:add).returns(200)
+              IndexTanked::IndexTank::Document.any_instance.expects(:add).returns(200)
               Timer.expects(:timeout).never
               assert_nothing_raised do
                 TestObject.add_to_index_tank('/docid/1', [{:apples => :delicious}], false)
@@ -98,7 +98,7 @@ module IndexTanked
 
         context "when an exception is raised" do
           setup do
-            IndexTank::Document.any_instance.expects(:add).raises(StandardError)
+            IndexTanked::IndexTank::Document.any_instance.expects(:add).raises(StandardError)
           end
 
           context "and the call was made to #add_to_index_tank with the third argument true or absent" do
@@ -203,7 +203,7 @@ module IndexTanked
 
         context "when an exception is raised" do
           setup do
-            IndexTank::Document.any_instance.expects(:delete).raises(StandardError)
+            IndexTanked::IndexTank::Document.any_instance.expects(:delete).raises(StandardError)
           end
 
           context "and the call was made to #delete_from_index_tank with the third argument true or absent" do

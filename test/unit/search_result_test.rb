@@ -6,12 +6,12 @@ module IndexTanked
     context "A search result" do
       setup do
         IndexTanked::Configuration.search_availability = true
-        @search_result = SearchResult.new('bacon', IndexTank::Index.new('list_o_bacon'), :page => 1, :per_page => 5)
+        @search_result = SearchResult.new('bacon', IndexTanked::IndexTank::Index.new('list_o_bacon'), :page => 1, :per_page => 5)
       end
 
       context "without a query" do
         setup do
-          @search_result = SearchResult.new(nil, IndexTank::Index.new('list_o_bacon'), :page => 1, :per_page => 5)
+          @search_result = SearchResult.new(nil, IndexTanked::IndexTank::Index.new('list_o_bacon'), :page => 1, :per_page => 5)
         end
 
         should "raise an exception when any of its methods are called" do

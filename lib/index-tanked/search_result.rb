@@ -46,7 +46,7 @@ module IndexTanked
       @results ||= WillPaginate::Collection.create(@page, @per_page) do |pager|
         begin
           raise SearchingDisabledError, "index tank search is disabled in configuration" unless IndexTanked::Configuration.search_available?
-          raise IndexTanked::SearchError, "No or invalid index has been provided" unless @index.is_a? IndexTank::Index
+          raise IndexTanked::SearchError, "No or invalid index has been provided" unless @index.is_a? IndexTanked::IndexTank::Index
           raise IndexTanked::SearchError, "No query provided" if @query.nil?
           search_timeout = if IndexTanked::Configuration.search_timeout.is_a?(Proc)
             IndexTanked::Configuration.search_timeout.call
