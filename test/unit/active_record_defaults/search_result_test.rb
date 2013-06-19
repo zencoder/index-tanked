@@ -118,7 +118,7 @@ module IndexTanked
           end
 
           should "not call the missing_ids_handler if it hasn't been configured and there are missing_ids" do
-            Configuration.missing_activerecord_ids_handler.expects(:call).never
+            Configuration.missing_activerecord_ids_handler = nil
             @search_result.records
           end
 

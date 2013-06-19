@@ -16,7 +16,7 @@ Gem::Specification.new do |s|
   s.add_dependency "will_paginate", '~>2.3'
   s.add_dependency "faraday_middleware", '~>0.9.0'
   s.add_dependency "yajl-ruby", '~>1.1.0'
-  s.add_development_dependency "shoulda"
+  s.add_development_dependency "shoulda", "2.10.3"
   s.add_development_dependency "mocha"
   s.add_development_dependency "webmock"
   s.add_development_dependency "activerecord", "~> 3"

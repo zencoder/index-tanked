@@ -65,8 +65,8 @@ module IndexTanked
       end
     end
 
-    class DocumentResponseMiddleware < FaradayMiddleware::ResponseMiddleware
-      def process_response(env)
+    class DocumentResponseMiddleware < Faraday::Response::Middleware
+      def on_complete(env)
         case env[:status]
         when 200
           nil # this is the expected code

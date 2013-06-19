@@ -37,8 +37,8 @@ module IndexTanked
       end
     end
 
-    class ClientResponseMiddleware < FaradayMiddleware::ResponseMiddleware
-      def process_response(env)
+    class ClientResponseMiddleware < Faraday::Response::Middleware
+      def on_complete(env)
         case env[:status]
         when 200
           nil # this is the expected return code
@@ -49,6 +49,11 @@ module IndexTanked
         else
           raise UnexpectedHTTPException, env[:body]
         end
+      end
+
+      def initialize(app)
+        super
+        @parser = nil
       end
     end
   end

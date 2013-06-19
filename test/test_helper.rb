@@ -3,7 +3,7 @@ require 'bundler/setup'
 
 require 'test/unit'
 require 'shoulda'
-require 'mocha'
+require 'mocha/setup'
 require 'sqlite3'
 require 'webmock/test_unit'
 

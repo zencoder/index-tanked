@@ -1,23 +1,21 @@
 require 'faraday_middleware'
-require 'faraday_middleware/response_middleware'
 require 'uri'
 
-require 'index-tanked/indextank/client'
+require "index-tanked/indextank/client"
 
 module IndexTanked
   module IndexTank
-    VERSION = "1.0.12"
+    VERSION = "1.0.13"
 
     def self.setup_connection(url)
-      ## in Faraday 0.8 or above:
-      @conn = Faraday.new(url) do |conn|
-        conn.response :json
-        yield conn if block_given?
-        conn.adapter Faraday.default_adapter
+      @conn = Faraday::Connection.new(:url => url) do |builder|
+        builder.use FaradayMiddleware::ParseJson
+        yield builder if block_given?
+        builder.adapter Faraday.default_adapter
       end
       @uri = URI.parse(url)
       @conn.basic_auth @uri.user,@uri.password
-      @conn.headers['User-Agent'] = "IndexTanked::IndexTank-Ruby/#{VERSION}"
+      @conn.headers['User-Agent'] = "IndexTank-Ruby/#{VERSION}"
       @conn
     end
   end
